@@ -1,4 +1,5 @@
 ﻿using ETradeAPI.Application.Repositories;
+using ETradeAPI.Application.RequestParameters;
 using ETradeAPI.Application.ViewModels.Products;
 using ETradeAPI.Domain.Entities;
 using Microsoft.AspNetCore.Http;
@@ -13,14 +14,16 @@ namespace ETradeAPI.API.Controllers
     {
         readonly private IProductWriteRepository _productWriteRepository;
         readonly private IProductReadRepository _productReadRepository;
+        private IWebHostEnvironment _webHostEnvironment;
         public ProductsController(IProductReadRepository productReadRepository,
-                IProductWriteRepository productWriteRepository)
+                IProductWriteRepository productWriteRepository, IWebHostEnvironment webHostEnvironment)
         {
           _productReadRepository= productReadRepository;    
             _productWriteRepository= productWriteRepository;
+            _webHostEnvironment= webHostEnvironment;
         }
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery]Pagination pagination)
         {
             return Ok(_productReadRepository.GetAll(false));
         }
@@ -57,6 +60,26 @@ namespace ETradeAPI.API.Controllers
         {
             await _productWriteRepository.RemoveAsync(id);
             await _productWriteRepository.SaveAsync();
+            return Ok();
+        }
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Upload()
+        {
+            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "resource/product-images");
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+            Random r = new();
+            foreach(IFormFile file in Request.Form.Files)
+            {
+                string fullPath = Path.Combine(uploadPath, $"{r.NextDouble()}{Path.GetExtension(file.FileName)}");
+
+                using FileStream fileStream = new(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 1024*1024, useAsync:false );
+               await file.CopyToAsync(fileStream);
+                await fileStream.FlushAsync();
+
+            }
             return Ok();
         }
     }
