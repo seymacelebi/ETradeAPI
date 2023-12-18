@@ -1,4 +1,5 @@
 using ETradeAPI.Application.Validators.Products;
+using ETradeAPI.Infrastructure;
 using ETradeAPI.Infrastructure.Filters;
 using ETradeAPI.Persistence;
 using FluentValidation.AspNetCore;
@@ -6,6 +7,7 @@ using FluentValidation.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddPersistenceServices();
+builder.Services.AddInfrastructureServices();
 builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>())
     .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>()).ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
