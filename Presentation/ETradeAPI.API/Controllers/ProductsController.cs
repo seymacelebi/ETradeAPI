@@ -1,8 +1,11 @@
-﻿using ETradeAPI.Application.Repositories;
+﻿using ETradeAPI.Application.Features.Command.Product.CreateProduct;
+using ETradeAPI.Application.Features.Queries.Product.GetAllProduct;
+using ETradeAPI.Application.Repositories;
 using ETradeAPI.Application.RequestParameters;
 using ETradeAPI.Application.Services;
 using ETradeAPI.Application.ViewModels.Products;
 using ETradeAPI.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -17,18 +20,22 @@ namespace ETradeAPI.API.Controllers
         readonly private IProductReadRepository _productReadRepository;
         readonly private IFileService _fileService;
         private IWebHostEnvironment _webHostEnvironment;
+
+        readonly IMediator _mediator;
         public ProductsController(IProductReadRepository productReadRepository,
-                IProductWriteRepository productWriteRepository, IWebHostEnvironment webHostEnvironment, IFileService fileService)
+                IProductWriteRepository productWriteRepository, IWebHostEnvironment webHostEnvironment, IFileService fileService, IMediator mediator)
         {
-          _productReadRepository= productReadRepository;    
-            _productWriteRepository= productWriteRepository;
-            _webHostEnvironment= webHostEnvironment;
-            _fileService= fileService;
+            _productReadRepository = productReadRepository;
+            _productWriteRepository = productWriteRepository;
+            _webHostEnvironment = webHostEnvironment;
+            _fileService = fileService;
+            _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery]Pagination pagination)
+        public async Task<IActionResult> Get([FromQuery] GetAllProductQueryRequest getAllProductQueryRequest)
         {
-            return Ok(_productReadRepository.GetAll(false));
+         GetAllProductQueryResponse response =  await _mediator.Send(getAllProductQueryRequest);
+            return Ok(response);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
@@ -36,16 +43,10 @@ namespace ETradeAPI.API.Controllers
             return Ok( await _productReadRepository.GetByIdAsync(id, false));
         }
         [HttpPost]
-        public async Task<IActionResult> Post(VM_Create_Product model)
+        public async Task<IActionResult> Post(CreateProductCommandRequest createProductCommandRequest)
         {
-            _productWriteRepository.AddAsync(new()
-            {
-                Name = model.Name,  
-                Price = model.Price,
-                Stock = model.Stock,    
-            });
-            await _productWriteRepository.SaveAsync();
-            return Ok();
+          CreateProductCommandRequest response =  await _mediator.Send(createProductCommandRequest);
+            return Ok(response);
         }
         [HttpPut]
         public async Task<IActionResult> Put(VM_Update_Product model)
