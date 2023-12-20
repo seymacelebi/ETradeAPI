@@ -1,5 +1,10 @@
 ﻿using ETradeAPI.Application.Features.Command.Product.CreateProduct;
+using ETradeAPI.Application.Features.Command.Product.DeleteProduct;
+using ETradeAPI.Application.Features.Command.Product.UpdateProduct;
+using ETradeAPI.Application.Features.Command.ProductImageFile.DeleteProductImage;
+using ETradeAPI.Application.Features.Command.ProductImageFile.UploadProductImage;
 using ETradeAPI.Application.Features.Queries.Product.GetAllProduct;
+using ETradeAPI.Application.Features.Queries.Product.GetByIdProduct;
 using ETradeAPI.Application.Repositories;
 using ETradeAPI.Application.RequestParameters;
 using ETradeAPI.Application.Services;
@@ -37,60 +42,50 @@ namespace ETradeAPI.API.Controllers
          GetAllProductQueryResponse response =  await _mediator.Send(getAllProductQueryRequest);
             return Ok(response);
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(string id)
+
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> Get([FromRoute] GetByIdProductQueryRequest getByIdProductQueryRequest)
         {
-            return Ok( await _productReadRepository.GetByIdAsync(id, false));
+            GetByIdProductQueryResponse response = await _mediator.Send(getByIdProductQueryRequest);
+            return Ok(response);
         }
         [HttpPost]
         public async Task<IActionResult> Post(CreateProductCommandRequest createProductCommandRequest)
         {
-          CreateProductCommandRequest response =  await _mediator.Send(createProductCommandRequest);
+            CreateProductCommandResponse response = await _mediator.Send(createProductCommandRequest);
             return Ok(response);
         }
         [HttpPut]
-        public async Task<IActionResult> Put(VM_Update_Product model)
+        public async Task<IActionResult> Put([FromBody] UpdateProductCommandRequest updateProductCommandRequest)
         {
-            Product product = await _productReadRepository.GetByIdAsync(model.Id);
-            product.Stock = model.Stock;    
-            product.Price = model.Price;
-            product.Name = model.Name;
-           await  _productWriteRepository.SaveAsync();
-            return Ok();   
-
+            UpdateProductCommandResponse response = await _mediator.Send(updateProductCommandRequest);
+            return Ok(response);
         }
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> Delete([FromRoute] DeleteProductCommandRequest deleteProductCommandRequest)
         {
-            await _productWriteRepository.RemoveAsync(id);
-            await _productWriteRepository.SaveAsync();
+            DeleteProductCommandResponse response = await _mediator.Send(deleteProductCommandRequest);
+            return Ok(response);
+        }
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Upload([FromQuery] UploadProductImageCommandRequest uploadProductImageCommandRequest)
+        {
+            uploadProductImageCommandRequest.Files = Request.Form.Files;
+            UploadProductImageCommandResponse response = await _mediator.Send(uploadProductImageCommandRequest);
             return Ok();
         }
+        //[HttpDelete("[action]/{Id}")]
+        //public async Task<IActionResult> DeleteProductImage([FromQuery, FromRoute]DeleteProductImageCommandRequest  deleteProductImageCommandRequest)
+        //{
+
+        //}
+
         //[HttpPost("[action]")]
         //public async Task<IActionResult> Upload()
         //{
-        //    string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "resource/product-images");
-        //    if (!Directory.Exists(uploadPath))
-        //    {
-        //        Directory.CreateDirectory(uploadPath);
-        //    }
-        //    Random r = new();
-        //    foreach(IFormFile file in Request.Form.Files)
-        //    {
-        //        string fullPath = Path.Combine(uploadPath, $"{r.NextDouble()}{Path.GetExtension(file.FileName)}");
-
-        //        using FileStream fileStream = new(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 1024*1024, useAsync:false );
-        //       await file.CopyToAsync(fileStream);
-        //        await fileStream.FlushAsync();
-
-        //    }
-        //    return Ok();
+        //    _fileService.UploadFileAsync("resource//product-images", Request.Form.Files);
+        //    return Ok();    
         //}
-        [HttpPost("[action]")]
-        public async Task<IActionResult> Upload()
-        {
-            _fileService.UploadFileAsync("resource//product-images", Request.Form.Files);
-            return Ok();    
-        }
     }
 }
