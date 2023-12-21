@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace ETradeAPI.Domain.Entities.Identity
 {
-    public class AppUser :IdentityUser<string>
+    public class AppRole :IdentityRole<string>
     {
-        public string NameSurname { get; set; }
     }
 }

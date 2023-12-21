@@ -1,5 +1,7 @@
 ﻿using ETradeAPI.Domain.Entities;
 using ETradeAPI.Domain.Entities.Common;
+using ETradeAPI.Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ETradeAPI.Persistence.Contexts;
 
-public class ETradeAPIDbContext : DbContext
+public class ETradeAPIDbContext : IdentityDbContext<AppUser, AppRole, string>
 {
     public ETradeAPIDbContext(DbContextOptions options) : base(options)
     {
