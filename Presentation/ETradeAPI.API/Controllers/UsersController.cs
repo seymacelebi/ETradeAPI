@@ -1,4 +1,5 @@
 ﻿using ETradeAPI.Application.Features.Command.AppUser.CreateUser;
+using ETradeAPI.Application.Features.Command.AppUser.LoginUser;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +16,16 @@ namespace ETradeAPI.API.Controllers
         {
             _mediator = mediator;
         }
-        public async Task<IActionResult> CreateUser(CreateUserCommandRequest createUserCommandRequest)
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateUserCommandRequest createUserCommandRequest)
         {
             CreateUserCommandResponse response = await _mediator.Send(createUserCommandRequest);
+            return Ok(response);
+        }
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Login(LoginUserCommandRequest loginUserCommandRequest)
+        {
+         LoginUserCommandResponse response = await _mediator.Send(loginUserCommandRequest);
             return Ok(response);
         }
     }
