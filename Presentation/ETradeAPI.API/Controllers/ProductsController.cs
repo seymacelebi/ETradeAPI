@@ -1,8 +1,6 @@
 ﻿using ETradeAPI.Application.Features.Command.Product.CreateProduct;
 using ETradeAPI.Application.Features.Command.Product.DeleteProduct;
 using ETradeAPI.Application.Features.Command.Product.UpdateProduct;
-using ETradeAPI.Application.Features.Command.ProductImageFile.DeleteProductImage;
-using ETradeAPI.Application.Features.Command.ProductImageFile.UploadProductImage;
 using ETradeAPI.Application.Features.Queries.Product.GetAllProduct;
 using ETradeAPI.Application.Features.Queries.Product.GetByIdProduct;
 using ETradeAPI.Application.Repositories;
@@ -68,13 +66,7 @@ namespace ETradeAPI.API.Controllers
             DeleteProductCommandResponse response = await _mediator.Send(deleteProductCommandRequest);
             return Ok(response);
         }
-        [HttpPost("[action]")]
-        public async Task<IActionResult> Upload([FromQuery] UploadProductImageCommandRequest uploadProductImageCommandRequest)
-        {
-            uploadProductImageCommandRequest.Files = Request.Form.Files;
-            UploadProductImageCommandResponse response = await _mediator.Send(uploadProductImageCommandRequest);
-            return Ok();
-        }
+      
         //[HttpDelete("[action]/{Id}")]
         //public async Task<IActionResult> DeleteProductImage([FromQuery, FromRoute]DeleteProductImageCommandRequest  deleteProductImageCommandRequest)
         //{

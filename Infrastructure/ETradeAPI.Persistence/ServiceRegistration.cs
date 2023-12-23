@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using ETradeAPI.Application.Repositories;
 using ETradeAPI.Persistence.Repositories;
 using ETradeAPI.Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace ETradeAPI.Persistence
 {
@@ -14,16 +15,25 @@ namespace ETradeAPI.Persistence
         {
             services.AddDbContext<ETradeAPIDbContext>(options => options.UseNpgsql(Configuration.ConnectionString));
 
-            //  services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<ETradeAPIDbContext>();
             services.AddIdentity<AppUser, AppRole>(options =>
             {
                 options.Password.RequiredLength = 3;
                 options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireDigit= false;
-                options.Password.RequireLowercase= false;
-                options.Password.RequireUppercase= false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+            }).AddEntityFrameworkStores<ETradeAPIDbContext>()
+          .AddDefaultTokenProviders();
 
-            });
+            //services.AddIdentity<AppUser, AppRole>(options =>
+            //{
+            //    options.Password.RequiredLength = 3;
+            //    options.Password.RequireNonAlphanumeric = false;
+            //    options.Password.RequireDigit= false;
+            //    options.Password.RequireLowercase= false;
+            //    options.Password.RequireUppercase= false;
+
+            //});
 
             services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
