@@ -1,4 +1,6 @@
-﻿using ETradeAPI.Application.Exceptions;
+﻿using ETradeAPI.Application.Abstractions;
+using ETradeAPI.Application.DTOs;
+using ETradeAPI.Application.Exceptions;
 using ETradeAPI.Application.Features.Command.AppUser.CreateUser;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +16,7 @@ namespace ETradeAPI.Application.Features.Command.AppUser.LoginUser
     {
         readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
         readonly SignInManager<Domain.Entities.Identity.AppUser> _signInManager;
-
+        readonly ITokenHandler _tokenHandler;
         public LoginUserCommandHandler(SignInManager<Domain.Entities.Identity.AppUser> signInManager, UserManager<Domain.Entities.Identity.AppUser> userManager)
         {
             _signInManager = signInManager;
@@ -32,11 +34,16 @@ namespace ETradeAPI.Application.Features.Command.AppUser.LoginUser
                 throw new NotFoundUserException("Kullanıcı veya şifre hatalıdır. ");
             }
          SignInResult result = await  _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+
             if (result.Succeeded)
             {
-               //yetkileri belirlememiz gerekiyor.
+                Token token = _tokenHandler.CreateAccessToken(5);
+                return new LoginUserSuccessResponse()
+                {
+                    Token = token
+                };
             }
-            return new();
+            throw new AuthenticationErrorException();
         }
     }
 }

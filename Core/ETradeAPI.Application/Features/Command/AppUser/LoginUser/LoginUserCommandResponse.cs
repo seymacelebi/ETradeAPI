@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ETradeAPI.Application.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,15 @@ namespace ETradeAPI.Application.Features.Command.AppUser.LoginUser
 {
     public class LoginUserCommandResponse
     {
-
+       
+        
+    }
+    public class LoginUserSuccessResponse : LoginUserCommandResponse
+    {
+        public Token Token { get; set; }
+    }
+    public class LoginUserErrorCommandResponse : LoginUserCommandResponse
+    {
+        public string Message { get; set; }
     }
 }
