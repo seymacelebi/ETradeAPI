@@ -39,6 +39,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
     };
 });
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

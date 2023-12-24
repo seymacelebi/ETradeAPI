@@ -6,6 +6,8 @@ using ETradeAPI.Application.Repositories;
 using ETradeAPI.Persistence.Repositories;
 using ETradeAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using ETradeAPI.Application.Abstractions.Services;
+using ETradeAPI.Persistence.Services;
 
 namespace ETradeAPI.Persistence
 {
@@ -41,6 +43,7 @@ namespace ETradeAPI.Persistence
             services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
+            services.AddScoped<IUserService, UserService>();
         }
     }
 }
