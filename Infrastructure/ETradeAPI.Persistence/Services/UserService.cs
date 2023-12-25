@@ -1,5 +1,6 @@
 ﻿using ETradeAPI.Application.Abstractions.Services;
 using ETradeAPI.Application.DTOs.User;
+using ETradeAPI.Application.Exceptions;
 using ETradeAPI.Application.Features.Command.AppUser.CreateUser;
 using ETradeAPI.Domain.Entities.Identity;
 using MediatR;
@@ -21,9 +22,36 @@ namespace ETradeAPI.Persistence.Services
             _userManager = userManager;
         }
 
-        public Task<CreateUserResponse> CreateAsync(CreateUser model)
+        public async Task<CreateUserResponse> CreateAsync(CreateUser model)
         {
-            throw new NotImplementedException();
+            IdentityResult result = await _userManager.CreateAsync(new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserName = model.Username,
+                Email = model.Email,
+                NameSurname = model.NameSurname,
+            }, model.Password);
+
+            CreateUserResponse response = new() { Succeeded = result.Succeeded };
+
+            if (result.Succeeded)
+                response.Message = "Kullanıcı başarıyla oluşturulmuştur.";
+            else
+                foreach (var error in result.Errors)
+                    response.Message += $"{error.Code} - {error.Description}\n";
+
+            return response;
+        }
+        public async Task UpdateRefreshToken(string refreshToken, AppUser user, DateTime accessTokenDate, int addOnAccessTokenDate)
+        {
+            if (user != null)
+            {
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenEndDate = accessTokenDate.AddSeconds(addOnAccessTokenDate);
+                await _userManager.UpdateAsync(user);
+            }
+            else
+                throw new NotFoundUserException();
         }
     }
 }

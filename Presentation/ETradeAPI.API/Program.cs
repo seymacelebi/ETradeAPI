@@ -6,6 +6,7 @@ using ETradeAPI.Persistence;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +18,7 @@ builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>
     .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>()).ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("http://localhost:4200" , "https://localhost:4200").AllowAnyHeader().AllowAnyMethod()
     ));
 //builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyHeader(). AllowAnyMethod() .AllowAnyOrigin())); 
@@ -36,9 +37,47 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidAudience = builder.Configuration["Token:Issuer"],
         ValidIssuer = builder.Configuration["Token:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"]!)),
+        LifetimeValidator = (notBefore, expires, securityToken, validatiohParameters) => expires != null ? expires > DateTime.UtcNow :false,
+
 
     };
 });
+var securityScheme = new OpenApiSecurityScheme()
+{
+    Name = "Authorization",
+    Type = SecuritySchemeType.Http,
+    Scheme = "Bearer",
+    BearerFormat = "JWT",
+    In = ParameterLocation.Header,
+    Description = "PUT ONLY TOKEN WITHOUT BEARER HERE!",
+};
+var securityReq = new OpenApiSecurityRequirement()
+{
+    {
+        new OpenApiSecurityScheme
+        {
+           Reference = new OpenApiReference
+              {
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+              },
+              Scheme = "oauth2",
+              Name = "Bearer",
+              In = ParameterLocation.Header,
+        },
+        new string[] {}
+    }
+};
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", securityScheme);
+    c.AddSecurityRequirement(securityReq);
+    //c.SwaggerDoc("v1", new OpenApiInfo { Title = "PmpPlus MarketPlace - V1", Version = "v1" });
+    //c.SwaggerDoc("v2", new OpenApiInfo { Title = "PmpPlus MarketPlace - V2", Version = "v2" });
+   
+   
+});
+
 
 var app = builder.Build();
 

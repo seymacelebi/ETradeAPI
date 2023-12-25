@@ -1,4 +1,5 @@
 ﻿using ETradeAPI.Application.Abstractions;
+using ETradeAPI.Application.Abstractions.Services;
 using ETradeAPI.Application.DTOs;
 using ETradeAPI.Application.Exceptions;
 using ETradeAPI.Application.Features.Command.AppUser.CreateUser;
@@ -14,36 +15,19 @@ namespace ETradeAPI.Application.Features.Command.AppUser.LoginUser
 {
     public class LoginUserCommandHandler : IRequestHandler<LoginUserCommandRequest, LoginUserCommandResponse>
     {
-        readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
-        readonly SignInManager<Domain.Entities.Identity.AppUser> _signInManager;
-        readonly ITokenHandler _tokenHandler;
-        public LoginUserCommandHandler(SignInManager<Domain.Entities.Identity.AppUser> signInManager, UserManager<Domain.Entities.Identity.AppUser> userManager)
+        readonly IAuthService _authService;
+        public LoginUserCommandHandler(IAuthService authService)
         {
-            _signInManager = signInManager;
-            _userManager = userManager;
-
+            _authService = authService;
         }
 
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-        Domain.Entities.Identity.AppUser  user =  await _userManager.FindByNameAsync(request.UsernameOrEmail);
-            if (user == null)
-                user = await _userManager.FindByEmailAsync(request.UsernameOrEmail);
-            if(user == null)
+            var token = await _authService.LoginAsync(request.UsernameOrEmail, request.Password, 900);
+            return new LoginUserSuccessCommandResponse()
             {
-                throw new NotFoundUserException("Kullanıcı veya şifre hatalıdır. ");
-            }
-         SignInResult result = await  _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-
-            if (result.Succeeded)
-            {
-                Token token = _tokenHandler.CreateAccessToken(5);
-                return new LoginUserSuccessResponse()
-                {
-                    Token = token
-                };
-            }
-            throw new AuthenticationErrorException();
+                Token = token
+            };
         }
     }
 }

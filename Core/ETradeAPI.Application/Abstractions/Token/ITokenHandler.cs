@@ -9,6 +9,7 @@ namespace ETradeAPI.Application.Abstractions
 {
     public interface ITokenHandler
     {
-        Token CreateAccessToken(int minute);
+        DTOs.Token CreateAccessToken(int second);
+        string CreateRefreshToken();
     }
 }

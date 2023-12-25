@@ -12,7 +12,7 @@ namespace ETradeAPI.Application.Features.Command.AppUser.LoginUser
        
         
     }
-    public class LoginUserSuccessResponse : LoginUserCommandResponse
+    public class LoginUserSuccessCommandResponse : LoginUserCommandResponse
     {
         public Token Token { get; set; }
     }

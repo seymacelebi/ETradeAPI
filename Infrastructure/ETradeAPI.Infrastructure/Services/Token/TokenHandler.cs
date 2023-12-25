@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,24 +20,39 @@ namespace ETradeAPI.Infrastructure.Services.Token
             _configuration = configuration;
         }
 
-        public Application.DTOs.Token CreateAccessToken(int minute)
+        public Application.DTOs.Token CreateAccessToken(int second)
         {
             Application.DTOs.Token token = new();
-            //security key in simetriğini alıyoruz.
-            SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(_configuration["Token: SecurityKey"]));
-            SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            //oluşturulacak token ayarlarını veriyoruz.
-            token.Expiration = DateTime.UtcNow.AddMinutes(minute);
-            JwtSecurityToken jwtSecurityToken = new(audience: _configuration["Token: Audience"],
-                issuer: _configuration["Token: Issuer"],
+
+            //Security Key'in simetriğini alıyoruz.
+            SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(_configuration["Token:SecurityKey"]));
+
+            //Şifrelenmiş kimliği oluşturuyoruz.
+            SigningCredentials signingCredentials = new(securityKey, SecurityAlgorithms.HmacSha256);
+
+            //Oluşturulacak token ayarlarını veriyoruz.
+            token.Expiration = DateTime.UtcNow.AddMinutes(second);
+            JwtSecurityToken securityToken = new(
+                audience: _configuration["Token:Audience"],
+                issuer: _configuration["Token:Issuer"],
                 expires: token.Expiration,
                 notBefore: DateTime.UtcNow,
                 signingCredentials: signingCredentials
                 );
-            //token oluşturucu sınıfından bir örnek alalım.
+
+            //Token oluşturucu sınıfından bir örnek alalım.
             JwtSecurityTokenHandler tokenHandler = new();
-           token.AccessToken = tokenHandler.WriteToken(jwtSecurityToken);
-            return token;       
+            token.AccessToken = tokenHandler.WriteToken(securityToken);
+            token.RefreshToken = CreateRefreshToken();
+            return token;
+        }
+
+        public string CreateRefreshToken()
+        {
+            byte[] number = new byte[32];
+            using RandomNumberGenerator random = RandomNumberGenerator.Create();
+            random.GetBytes(number);
+            return Convert.ToBase64String(number);
         }
     }
 }
