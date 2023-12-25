@@ -2,6 +2,7 @@
 using ETradeAPI.Application.Repositories;
 using ETradeAPI.Domain.Entities;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,13 @@ namespace ETradeAPI.Application.Features.Command.Product.UpdateProduct
     {
         readonly IProductWriteRepository _productWriteRepository;
         readonly IProductReadRepository _productReadRepository;
+        readonly ILogger<UpdateProductCommandHandler> _logger;
 
-        public UpdateProductCommandHandler(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository)
+        public UpdateProductCommandHandler(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, ILogger<UpdateProductCommandHandler> logger)
         {
             _productWriteRepository = productWriteRepository;
             _productReadRepository = productReadRepository;
+            _logger = logger;
         }
 
         public async Task<UpdateProductCommandResponse> Handle(UpdateProductCommandRequest request, CancellationToken cancellationToken)
@@ -28,6 +31,7 @@ namespace ETradeAPI.Application.Features.Command.Product.UpdateProduct
             product.Name = request.Name;
             product.Price = request.Price;
             await _productWriteRepository.SaveAsync();
+            _logger.LogInformation("Product güncellendi...");
             return new();
         }
     }
