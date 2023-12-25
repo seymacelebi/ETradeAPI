@@ -1,11 +1,14 @@
 using ETradeAPI.API.Configurations.ColumnWriters;
+using ETradeAPI.API.Extensions;
 using ETradeAPI.Application;
 using ETradeAPI.Application.Validators.Products;
 using ETradeAPI.Infrastructure;
 using ETradeAPI.Infrastructure.Filters;
 using ETradeAPI.Persistence;
+using ETradeAPI.SignalR;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -21,6 +24,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
+builder.Services.AddSignalRServices();
+
 builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>())
     .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>()).ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
@@ -125,6 +130,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+//uygulamada bir middleware eklemiþ olduk
+app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
 app.UseStaticFiles();
 app.UseSerilogRequestLogging();
 app.UseHttpLogging();
@@ -151,5 +158,5 @@ app.Use(async (context, next) =>
 
 
 app.MapControllers();
-
+//app.MapHubs();
 app.Run();
