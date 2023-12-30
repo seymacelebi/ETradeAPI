@@ -1,6 +1,7 @@
 ﻿using ETradeAPI.Application.Features.Command.AppUser.GoogleLogin;
 using ETradeAPI.Application.Features.Command.AppUser.LoginUser;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,7 @@ namespace ETradeAPI.API.Controllers
             _mediator = mediator;
         }
         [HttpPost("[action]")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginUserCommandRequest loginUserCommandRequest)
         {
             LoginUserCommandResponse response = await _mediator.Send(loginUserCommandRequest);
