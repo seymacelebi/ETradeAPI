@@ -1,6 +1,7 @@
 ﻿using ETradeAPI.Application.Abstractions.Services;
 using ETradeAPI.Application.DTOs.Order;
 using ETradeAPI.Application.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,12 @@ namespace ETradeAPI.Persistence.Services
     public class OrderService : IOrderService
     {
         readonly IOrderWriteRepository _orderWriteRepository;
+        readonly IOrderReadRepository _orderReadRepository;
 
-        public OrderService(IOrderWriteRepository orderWriteRepository)
+        public OrderService(IOrderWriteRepository orderWriteRepository, IOrderReadRepository orderReadRepository)
         {
             _orderWriteRepository = orderWriteRepository;
+            _orderReadRepository = orderReadRepository;
         }
 
         public Task<(bool, CompletedOrderDTO)> CompleteOrderAsync(string id)
@@ -34,14 +37,51 @@ namespace ETradeAPI.Persistence.Services
             await _orderWriteRepository.SaveAsync();
         }
 
-        public Task<ListOrder> GetAllOrdersAsync(int page, int size)
+        public async Task<ListOrder> GetAllOrdersAsync(int page, int size)
         {
-            throw new NotImplementedException();
-        }
+            var query = _orderReadRepository.Table.Include(o => o.Basket)
+                      .ThenInclude(b => b.User)
+                      .Include(o => o.Basket)
+                         .ThenInclude(b => b.BasketItems)
+                         .ThenInclude(bi => bi.Product);
 
-        public Task<SingleOrder> GetOrderByIdAsync(string id)
+            var data = query.Skip(page * size).Take(size);
+            /*.Take((page * size)..size);*/
+
+            return new()
+            {
+                TotalOrderCount = await query.CountAsync(),
+                Orders = await data.Select(o => new
+                {
+                    CreatedDate = o.CreateDate,
+                    OrderCode = o.OrderCode,
+                    TotalPrice = o.Basket.BasketItems.Sum(bi => bi.Product.Price * bi.Quantity),
+                    UserName = o.Basket.User.UserName
+                }).ToListAsync()
+            };
+        }
+        public async Task<SingleOrder> GetOrderByIdAsync(string id)
         {
-            throw new NotImplementedException();
+            var data = await _orderReadRepository.Table
+                                 .Include(o => o.Basket)
+                                     .ThenInclude(b => b.BasketItems)
+                                         .ThenInclude(bi => bi.Product)
+                                                 .FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
+
+            return new()
+            {
+                Id = data.Id.ToString(),
+                BasketItems = data.Basket.BasketItems.Select(bi => new
+                {
+                    bi.Product.Name,
+                    bi.Product.Price,
+                    bi.Quantity
+                }),
+                Address = data.Address,
+                CreatedDate = data.CreateDate,
+                Description = data.Description,
+                OrderCode = data.OrderCode
+            };
         }
     }
 }
