@@ -1,5 +1,7 @@
 ﻿using ETradeAPI.Application.Features.Command.AppUser.GoogleLogin;
 using ETradeAPI.Application.Features.Command.AppUser.LoginUser;
+using ETradeAPI.Application.Features.Command.AppUser.PasswordReset;
+using ETradeAPI.Application.Features.Command.AppUser.VerifyResetToken;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -30,7 +32,17 @@ namespace ETradeAPI.API.Controllers
         //    GoogleLoginCommandResponse response = await _mediator.Send(googleLoginCommandRequest);
         //    return Ok(response);
         //}
-
-       
+        [HttpPost("password-reset")]
+        public async Task<IActionResult> PasswordReset([FromBody]PasswordResetCommandRequest passwordResetCommandRequest)
+        {
+            PasswordResetCommandResponse response = await _mediator.Send(passwordResetCommandRequest);
+            return Ok(response);
+        }
+        [HttpPost("verify-reset-token")]
+        public async Task<IActionResult> VerifyResetToken([FromBody] VerifyResetTokenCommandRequest verifyResetTokenCommandRequest)
+        {
+            VerifyResetTokenCommandResponse response = await _mediator.Send(verifyResetTokenCommandRequest);
+            return Ok(response);
+        }
     }
-}
+} 
