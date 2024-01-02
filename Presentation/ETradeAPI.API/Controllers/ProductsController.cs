@@ -1,4 +1,7 @@
-﻿using ETradeAPI.Application.Features.Command.Product.CreateProduct;
+﻿using ETradeAPI.Application.Consts;
+using ETradeAPI.Application.CustomAttributes;
+using ETradeAPI.Application.Enums;
+using ETradeAPI.Application.Features.Command.Product.CreateProduct;
 using ETradeAPI.Application.Features.Command.Product.DeleteProduct;
 using ETradeAPI.Application.Features.Command.Product.UpdateProduct;
 using ETradeAPI.Application.Features.Queries.Product.GetAllProduct;
@@ -51,12 +54,14 @@ namespace ETradeAPI.API.Controllers
             return Ok(response);
         }
         [HttpPost]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Writing, Definition = "Create Product")]
         public async Task<IActionResult> Post(CreateProductCommandRequest createProductCommandRequest)
         {
             CreateProductCommandResponse response = await _mediator.Send(createProductCommandRequest);
             return Ok(response);
         }
         [HttpPut]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Updating, Definition = "Update Product")]
         public async Task<IActionResult> Put([FromBody] UpdateProductCommandRequest updateProductCommandRequest)
         {
             UpdateProductCommandResponse response = await _mediator.Send(updateProductCommandRequest);
@@ -64,6 +69,7 @@ namespace ETradeAPI.API.Controllers
         }
 
         [HttpDelete("{Id}")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Deleting, Definition = "Delete Product")]
         public async Task<IActionResult> Delete([FromRoute] DeleteProductCommandRequest deleteProductCommandRequest)
         {
             DeleteProductCommandResponse response = await _mediator.Send(deleteProductCommandRequest);

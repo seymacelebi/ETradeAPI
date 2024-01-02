@@ -1,7 +1,9 @@
 ﻿using ETradeAPI.Application.Abstractions;
 using ETradeAPI.Application.Abstractions.Services;
+using ETradeAPI.Application.Abstractions.Services.Configurations;
 using ETradeAPI.Application.Services;
 using ETradeAPI.Infrastructure.Services;
+using ETradeAPI.Infrastructure.Services.Configurations;
 using ETradeAPI.Infrastructure.Services.Token;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -19,5 +21,6 @@ public  static class ServiceRegistration
         serviceCollection.AddScoped<IFileService, FileService>();
         serviceCollection.AddScoped<ITokenHandler, TokenHandler>();
         serviceCollection.AddScoped<IMailService, MailService>();
+        serviceCollection.AddScoped<IApplicationService, ApplicationService>();
     }
 }
