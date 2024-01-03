@@ -1,8 +1,12 @@
-﻿using ETradeAPI.Application.Features.Command.AppUser.CreateUser;
+﻿using ETradeAPI.Application.Consts;
+using ETradeAPI.Application.CustomAttributes;
+using ETradeAPI.Application.Enums;
+using ETradeAPI.Application.Features.Command.AppUser.CreateUser;
 using ETradeAPI.Application.Features.Command.AppUser.GoogleLogin;
 using ETradeAPI.Application.Features.Command.AppUser.LoginUser;
 using ETradeAPI.Application.Features.Command.AppUser.UpdatePassword;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +33,13 @@ namespace ETradeAPI.API.Controllers
         {
             UpdatePasswordCommandResponse response = await _mediator.Send(updatePasswordCommandRequest);
             return Ok(response);
+        }
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(Menu ="Users", ActionType = ActionType.Reading, Definition = "Get All Users")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            return Ok();
         }
 
     }

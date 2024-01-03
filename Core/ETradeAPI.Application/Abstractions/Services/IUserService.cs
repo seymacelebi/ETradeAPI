@@ -13,6 +13,8 @@ namespace ETradeAPI.Application.Abstractions.Services
         Task<CreateUserResponse> CreateAsync(CreateUser model);
         Task UpdateRefreshToken(string refreshToken, AppUser user, DateTime accessTokenDate, int addOnAccessTokenDate);
         Task UpdatePasswordAsync(string userId, string resetToken, string newPassword);
+        Task<List<ListUser>> GetAllUsersAsync(int page, int size);
+        int TotalUsersCount { get; }
 
     }
 }

@@ -6,6 +6,7 @@ using ETradeAPI.Application.Helpers;
 using ETradeAPI.Domain.Entities.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,9 @@ namespace ETradeAPI.Persistence.Services
     public class UserService : IUserService
     {
         readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
+
+        //public int TotalUsersCount => throw new NotImplementedException();
+        public int TotalUsersCount => _userManager.Users.Count();
 
         public UserService(UserManager<AppUser> userManager)
         {
@@ -68,6 +72,25 @@ namespace ETradeAPI.Persistence.Services
                 else
                     throw new PasswordChangeFailedException();
             }
+        }
+
+        public async Task<List<ListUser>> GetAllUsersAsync(int page, int size)
+        {
+
+            var users = await _userManager.Users
+                  .Skip(page * size)
+                  .Take(size)
+                  .ToListAsync();
+
+            return users.Select(user => new ListUser
+            {
+                Id = user.Id,
+                Email = user.Email,
+                NameSurname = user.NameSurname,
+                TwoFactorEnabled = user.TwoFactorEnabled,
+                UserName = user.UserName
+
+            }).ToList();
         }
     }
 }
