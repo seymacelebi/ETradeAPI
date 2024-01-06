@@ -5,6 +5,9 @@ using ETradeAPI.Application.Features.Command.AppUser.CreateUser;
 using ETradeAPI.Application.Features.Command.AppUser.GoogleLogin;
 using ETradeAPI.Application.Features.Command.AppUser.LoginUser;
 using ETradeAPI.Application.Features.Command.AppUser.UpdatePassword;
+using ETradeAPI.Application.Features.Command.AuthorizationEndpoint.AssignRoleEndpoint;
+using ETradeAPI.Application.Features.Queries.AppUser.GetAllUsers;
+using ETradeAPI.Application.Features.Queries.AppUser.GetRolesToUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -28,7 +31,7 @@ namespace ETradeAPI.API.Controllers
             CreateUserCommandResponse response = await _mediator.Send(createUserCommandRequest);
             return Ok(response);
         }
-        [HttpPost("update-password")]
+        [HttpPost("UpdatePassword")]
         public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordCommandRequest updatePasswordCommandRequest)
         {
             UpdatePasswordCommandResponse response = await _mediator.Send(updatePasswordCommandRequest);
@@ -37,9 +40,26 @@ namespace ETradeAPI.API.Controllers
         [HttpGet]
         [Authorize(AuthenticationSchemes = "Admin")]
         [AuthorizeDefinition(Menu ="Users", ActionType = ActionType.Reading, Definition = "Get All Users")]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsers([FromQuery] GetAllUsersQueryRequest getAllUsersQueryRequest)
         {
-            return Ok();
+            GetAllUsersQueryResponse response = await _mediator.Send(getAllUsersQueryRequest);
+            return Ok(response);
+        }
+        [HttpGet("GetRolesToUser/{UserId}")]
+        [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(ActionType = ActionType.Reading, Definition = "Get Roles To Users", Menu = "Users")]
+        public async Task<IActionResult> GetRolesToUser([FromRoute] GetRolesToUserQueryRequest getRolesToUserQueryRequest)
+        {
+            GetRolesToUserQueryResponse response = await _mediator.Send(getRolesToUserQueryRequest);
+            return Ok(response);
+        }
+        [HttpPost("AssignRoleUser")]
+        [Authorize(AuthenticationSchemes = "Admin")]
+        [AuthorizeDefinition(ActionType = ActionType.Reading, Definition = "Assign Role To User", Menu = "Users")]
+        public async Task<IActionResult> AssigRoleToUser(AssignRoleEndpointCommandRequest assignRoleEndpointCommandRequest)
+        {
+            AssignRoleEndpointCommandResponse response = await _mediator.Send(assignRoleEndpointCommandRequest);
+            return Ok(response);
         }
 
     }
