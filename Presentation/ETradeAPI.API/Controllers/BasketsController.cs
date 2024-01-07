@@ -14,7 +14,7 @@ namespace ETradeAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Admin")]
     public class BasketsController : ControllerBase
     {
         readonly IMediator _mediator;
@@ -32,7 +32,7 @@ namespace ETradeAPI.API.Controllers
         }
         [HttpPost]
         [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Baskets, ActionType = ActionType.Writing, Definition = "Add Item To Basket ")]
-        public async Task<IActionResult> AddItemToBasket(CreateBasketCommandRequest createBasketCommandRequest)
+        public async Task<IActionResult> CreateBasketsItems(CreateBasketCommandRequest createBasketCommandRequest)
         {
             CreateBasketCommandResponse response  = await _mediator.Send(createBasketCommandRequest);
             return Ok(response);

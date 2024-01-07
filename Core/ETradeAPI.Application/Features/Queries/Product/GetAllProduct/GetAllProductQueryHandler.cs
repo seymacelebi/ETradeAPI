@@ -25,6 +25,7 @@ namespace ETradeAPI.Application.Features.Queries.Product.GetAllProduct
                 p.Name,
                 p.Stock,
                 p.Price, 
+                p.Description,
                
             }).ToList();
             return new()

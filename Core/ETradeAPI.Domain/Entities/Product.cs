@@ -9,11 +9,15 @@ namespace ETradeAPI.Domain.Entities
 {
     public class Product : BaseEntity
     {
+        public Guid CategoryId { get; set; }
         public string Name { get; set; }
         public int Stock { get; set; }
         public float Price { get; set; }
+        public string Description { get; set; }
         //public ICollection<Order> Orders { get; set;}
         public ICollection<BasketItem> BasketItems { get; set; }
+       
+        public Category Category { get; set; }
 
     }
 }

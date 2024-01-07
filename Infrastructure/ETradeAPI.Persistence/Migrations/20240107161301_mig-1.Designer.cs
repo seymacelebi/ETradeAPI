@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ETradeAPI.Persistence.Migrations
 {
     [DbContext(typeof(ETradeAPIDbContext))]
-    [Migration("20231229084021_mig-3")]
-    partial class mig3
+    [Migration("20240107161301_mig-1")]
+    partial class mig1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace ETradeAPI.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("AppRoleEndpoint", b =>
+                {
+                    b.Property<Guid>("EndpointsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("RolesId")
+                        .HasColumnType("text");
+
+                    b.HasKey("EndpointsId", "RolesId");
+
+                    b.HasIndex("RolesId");
+
+                    b.ToTable("AppRoleEndpoint");
+                });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Basket", b =>
                 {
@@ -78,6 +93,50 @@ namespace ETradeAPI.Persistence.Migrations
                     b.ToTable("BasketItems");
                 });
 
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.CompletedOrder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("CompletedOrders");
+                });
+
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Customer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -97,6 +156,44 @@ namespace ETradeAPI.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Endpoint", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ActionType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Definition")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("HttpType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("MenuId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MenuId");
+
+                    b.ToTable("Endpoints");
                 });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Identity.AppRole", b =>
@@ -199,6 +296,27 @@ namespace ETradeAPI.Persistence.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Menu", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Menus");
+                });
+
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -211,10 +329,11 @@ namespace ETradeAPI.Persistence.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("OrderCode")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -222,8 +341,6 @@ namespace ETradeAPI.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
 
                     b.ToTable("Orders");
                 });
@@ -234,8 +351,15 @@ namespace ETradeAPI.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -251,6 +375,8 @@ namespace ETradeAPI.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
                 });
@@ -361,19 +487,19 @@ namespace ETradeAPI.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("OrderProduct", b =>
+            modelBuilder.Entity("AppRoleEndpoint", b =>
                 {
-                    b.Property<Guid>("OrdersId")
-                        .HasColumnType("uuid");
+                    b.HasOne("ETradeAPI.Domain.Entities.Endpoint", null)
+                        .WithMany()
+                        .HasForeignKey("EndpointsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<Guid>("ProductsId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("OrdersId", "ProductsId");
-
-                    b.HasIndex("ProductsId");
-
-                    b.ToTable("OrderProduct");
+                    b.HasOne("ETradeAPI.Domain.Entities.Identity.AppRole", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Basket", b =>
@@ -406,14 +532,30 @@ namespace ETradeAPI.Persistence.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ETradeAPI.Domain.Entities.Order", b =>
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.CompletedOrder", b =>
                 {
-                    b.HasOne("ETradeAPI.Domain.Entities.Customer", "Customer")
-                        .WithMany("Orders")
-                        .HasForeignKey("CustomerId")
+                    b.HasOne("ETradeAPI.Domain.Entities.Order", "Order")
+                        .WithOne("CompletedOrder")
+                        .HasForeignKey("ETradeAPI.Domain.Entities.CompletedOrder", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Endpoint", b =>
+                {
+                    b.HasOne("ETradeAPI.Domain.Entities.Menu", "Menu")
+                        .WithMany("Endpoints")
+                        .HasForeignKey("MenuId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Menu");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Order", b =>
+                {
                     b.HasOne("ETradeAPI.Domain.Entities.Basket", "Basket")
                         .WithOne("Order")
                         .HasForeignKey("ETradeAPI.Domain.Entities.Order", "Id")
@@ -421,8 +563,17 @@ namespace ETradeAPI.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Basket");
+                });
 
-                    b.Navigation("Customer");
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Product", b =>
+                {
+                    b.HasOne("ETradeAPI.Domain.Entities.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -476,21 +627,6 @@ namespace ETradeAPI.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("OrderProduct", b =>
-                {
-                    b.HasOne("ETradeAPI.Domain.Entities.Order", null)
-                        .WithMany()
-                        .HasForeignKey("OrdersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ETradeAPI.Domain.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Basket", b =>
                 {
                     b.Navigation("BasketItems");
@@ -499,14 +635,25 @@ namespace ETradeAPI.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ETradeAPI.Domain.Entities.Customer", b =>
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Category", b =>
                 {
-                    b.Navigation("Orders");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Identity.AppUser", b =>
                 {
                     b.Navigation("Baskets");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Menu", b =>
+                {
+                    b.Navigation("Endpoints");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Order", b =>
+                {
+                    b.Navigation("CompletedOrder")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Product", b =>

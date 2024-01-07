@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +25,7 @@ public class ETradeAPIDbContext : IdentityDbContext<AppUser, AppRole, string>
     public DbSet<CompletedOrder> CompletedOrders { get; set; }
     public DbSet<Menu> Menus { get; set; }
     public DbSet<Endpoint> Endpoints { get; set; }
+    public DbSet<Category> Categories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -40,7 +42,10 @@ public class ETradeAPIDbContext : IdentityDbContext<AppUser, AppRole, string>
             .WithOne(c => c.Order)
               .HasForeignKey<CompletedOrder>(c => c.OrderId);
 
+
         base.OnModelCreating(builder);
+
+        
     }
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
