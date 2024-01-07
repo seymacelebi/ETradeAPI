@@ -22,4 +22,9 @@
     <ProjectReference Include="..\ETradeAPI.Domain\ETradeAPI.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Command\Category\DeleteCategory\" />
+    <Folder Include="Features\Command\Category\UpdateCategory\" />
+  </ItemGroup>
+
 </Project>

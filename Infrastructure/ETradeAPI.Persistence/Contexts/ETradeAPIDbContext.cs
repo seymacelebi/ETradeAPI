@@ -26,6 +26,8 @@ public class ETradeAPIDbContext : IdentityDbContext<AppUser, AppRole, string>
     public DbSet<Menu> Menus { get; set; }
     public DbSet<Endpoint> Endpoints { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<ProductVariant> ProductVariants { get; set; }
+    public DbSet<VariantOption> VariantOptions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -41,6 +43,17 @@ public class ETradeAPIDbContext : IdentityDbContext<AppUser, AppRole, string>
             .HasOne(o => o.CompletedOrder)
             .WithOne(c => c.Order)
               .HasForeignKey<CompletedOrder>(c => c.OrderId);
+
+        builder.Entity<Product>()
+            .HasMany(p => p.Variants)
+            .WithOne(v => v.Product)
+            .HasForeignKey(c => c.Id);
+
+        builder.Entity<ProductVariant>()
+            .HasMany(x => x.Options)
+            .WithOne(o => o.ProductVariant)
+            .HasForeignKey(d => d.ProductVariantId);
+
 
 
         base.OnModelCreating(builder);
