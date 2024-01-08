@@ -56,6 +56,10 @@ namespace ETradeAPI.Persistence
             services.AddScoped<IMenuWriteRepository, MenuWriteRepository>();
             services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
             services.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();    
+            services.AddScoped<IVariantOptionWriteRepository, VariantOptionWriteRepository>();
+            services.AddScoped<IVariantOptionReadRepository, VariantOptionReadRepository>();
+            services.AddScoped<IProductVariantReadRepository,ProductVariantReadRepository>();
+            services.AddScoped<IProductVariantWriteRepository, ProductVariantWriteRepository>();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
