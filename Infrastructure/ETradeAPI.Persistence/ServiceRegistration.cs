@@ -66,6 +66,7 @@ namespace ETradeAPI.Persistence
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IAuthorizationEndpointService, AuthorizationEndpointService>();
 
         }
