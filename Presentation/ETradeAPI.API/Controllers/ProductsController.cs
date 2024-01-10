@@ -60,9 +60,9 @@ namespace ETradeAPI.API.Controllers
             CreateProductCommandResponse response = await _mediator.Send(createProductCommandRequest);
             return Ok(response);
         }
-        [HttpPut]
+        [HttpPut("{Id}")]
         [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Products, ActionType = ActionType.Updating, Definition = "Update Product")]
-        public async Task<IActionResult> Put([FromBody] UpdateProductCommandRequest updateProductCommandRequest)
+        public async Task<IActionResult> Put([FromBody, FromRoute] UpdateProductCommandRequest updateProductCommandRequest)
         {
             UpdateProductCommandResponse response = await _mediator.Send(updateProductCommandRequest);
             return Ok(response);

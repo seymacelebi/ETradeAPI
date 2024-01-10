@@ -17,8 +17,6 @@ namespace ETradeAPI.Domain.Entities
         //public ICollection<Order> Orders { get; set;}
         public ICollection<BasketItem> BasketItems { get; set; }
         public List<ProductVariant> Variants { get; set; }
-
-
         public Category Category { get; set; }
 
     }
