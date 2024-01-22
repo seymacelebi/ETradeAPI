@@ -54,7 +54,10 @@ public class ETradeAPIDbContext : IdentityDbContext<AppUser, AppRole, string>
             .WithOne(o => o.ProductVariant)
             .HasForeignKey(d => d.ProductVariantId);
 
-
+        //modelBuilder.Entity<ProductVariant>()
+        //  .HasMany(x => x.Options)
+        //  .WithOne(o => o.ProductVariant)
+        //  .HasForeignKey(d => d.ProductVariantId);
 
         base.OnModelCreating(builder);
 
