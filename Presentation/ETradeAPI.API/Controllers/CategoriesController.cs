@@ -1,6 +1,13 @@
-﻿using ETradeAPI.Application.Features.Command.Category;
+﻿using ETradeAPI.Application.Consts;
+using ETradeAPI.Application.CustomAttributes;
+using ETradeAPI.Application.Enums;
+using ETradeAPI.Application.Features.Command.Category;
 using ETradeAPI.Application.Features.Command.Category.CreateCategory;
+using ETradeAPI.Application.Features.Command.Category.DeleteCategory;
+using ETradeAPI.Application.Features.Command.Category.UpdateCategory;
 using ETradeAPI.Application.Features.Command.Product.CreateProduct;
+using ETradeAPI.Application.Features.Command.Product.DeleteProduct;
+using ETradeAPI.Application.Features.Command.Product.UpdateProduct;
 using ETradeAPI.Application.Features.Queries.Category.GetAllCategory;
 using ETradeAPI.Application.Features.Queries.Category.GetByIdCategory;
 using ETradeAPI.Application.Features.Queries.Product.GetAllProduct;
@@ -40,6 +47,21 @@ namespace ETradeAPI.API.Controllers
         public async Task<IActionResult> Get([FromRoute] GetByIdCategoryQueryRequest getByIdCategoryQueryRequest)
         {
             GetByIdCategoryQueryResponse response = await _mediator.Send(getByIdCategoryQueryRequest);
+            return Ok(response);
+        }
+        [HttpPut("{Id}")]
+        [AuthorizeDefinition(Menu = "Update Category", ActionType = ActionType.Updating, Definition = "Update Category")]
+        public async Task<IActionResult> Put([FromBody, FromRoute] UpdateCategoryCommandRequest updateCategoryCommandRequest)
+        {
+            UpdateCategoryCommandResponse response = await _mediator.Send(updateCategoryCommandRequest);
+            return Ok(response);
+        }
+
+        [HttpDelete("{Id}")]
+        [AuthorizeDefinition(Menu = "Delete Category ", ActionType = ActionType.Deleting, Definition = "Delete Category")]
+        public async Task<IActionResult> Delete([FromRoute] DeleteCategoryCommandRequest deleteCategoryCommandRequest)
+        {
+            DeleteCategoryCommandResponse response = await _mediator.Send(deleteCategoryCommandRequest);
             return Ok(response);
         }
     }

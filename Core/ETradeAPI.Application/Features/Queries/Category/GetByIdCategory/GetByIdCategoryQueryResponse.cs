@@ -8,7 +8,8 @@ namespace ETradeAPI.Application.Features.Queries.Category.GetByIdCategory
 {
     public class GetByIdCategoryQueryResponse
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
+        //public Guid Id { get; set; }
+        //public string Name { get; set; }
+        public object data { get; set; }
     }
 }

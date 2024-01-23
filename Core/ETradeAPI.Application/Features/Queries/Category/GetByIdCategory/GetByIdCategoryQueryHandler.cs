@@ -1,4 +1,5 @@
-﻿using ETradeAPI.Application.Repositories;
+﻿using ETradeAPI.Application.Features.Queries.Category.GetAllCategory;
+using ETradeAPI.Application.Repositories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -17,18 +18,30 @@ namespace ETradeAPI.Application.Features.Queries.Category.GetByIdCategory
             _categoryReadRepository = categoryReadRepository;
         }
 
+       
         public async Task<GetByIdCategoryQueryResponse> Handle(GetByIdCategoryQueryRequest request, CancellationToken cancellationToken)
         {
-         
-           Domain.Entities.Category category = await _categoryReadRepository.GetByIdAsync(request.Id, false);
-            return new()
+            Domain.Entities.Category category = await _categoryReadRepository.GetByIdAsync(request.Id, false);
+
+            if (category == null)
             {
-                Name = category.Name,
-                Id = category.Id
+                // Handle the case where the category is not found, return appropriate response or throw an exception.
+                // For example:
+                // throw new NotFoundException($"Category with Id {request.Id} not found");
+            }
 
-            }; 
+            GetByIdCategoryQueryResponse response = new GetByIdCategoryQueryResponse
+            {
+                data = new
+                {
+                    Id = category.Id,
+                    Name = category.Name
+                }
+            };
 
-
+            return response;
         }
+
+
     }
 }

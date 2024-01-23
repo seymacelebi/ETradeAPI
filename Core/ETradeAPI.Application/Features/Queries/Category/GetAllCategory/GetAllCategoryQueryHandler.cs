@@ -1,4 +1,5 @@
-﻿using ETradeAPI.Application.Repositories;
+﻿using ETradeAPI.Application.Features.Queries.Product.GetAllProduct;
+using ETradeAPI.Application.Repositories;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -32,24 +33,46 @@ namespace ETradeAPI.Application.Features.Queries.Category.GetAllCategory
 
         //    return response; // Return the response directly, no need to create a new instance
         //}
+        //public async Task<GetAllCategoryQueryResponse> Handle(GetAllCategoryQueryRequest request, CancellationToken cancellationToken)
+        //{
+        //    var categories = _categoryReadRepository.GetAll(false);
+
+        //    var data = categories.Select(c => new Domain.Entities.Category
+        //    {
+        //        Id = c.Id,
+        //        Name = c.Name,
+
+        //    }).ToList();
+
+        //    var response = new GetAllCategoryQueryResponse
+        //    {
+        //        TotalCount = data.Count,
+        //        data = data
+        //    };
+
+        //    return response;
+        //}
         public async Task<GetAllCategoryQueryResponse> Handle(GetAllCategoryQueryRequest request, CancellationToken cancellationToken)
         {
-            var categories = _categoryReadRepository.GetAll(false);
+            var query = _categoryReadRepository.GetAll(false);
 
-            var categoryData = categories.Select(c => new Domain.Entities.Category
-            {
-                Id = c.Id,
-                Name = c.Name,
-              
-            }).ToList();
+            var totalCount = query.Count();
 
-            var response = new GetAllCategoryQueryResponse
+            var data = query
+                .Skip(request.Page * request.Size)
+                .Take(request.Size)
+                .Select(p => new
+                {
+                   p.Id, p.Name,    
+                })
+                .ToList();
+
+            return new GetAllCategoryQueryResponse
             {
-                TotalCount = categoryData.Count,
-                CategoryData = categoryData
+                
+                      data = data,
+                      TotalCount = data.Count,
             };
-
-            return response;
         }
     }
 }

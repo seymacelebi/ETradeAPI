@@ -8,8 +8,10 @@ namespace ETradeAPI.Application.Features.Queries.Category.GetAllCategory
 {
     public class GetAllCategoryQueryResponse
     {
+        
+        //public List<Domain.Entities.Category> CategoryData { get; set; } 
+        public object data { get; set; }
         public int TotalCount { get; set; }
 
-        public List<Domain.Entities.Category> CategoryData { get; set; } // Change property type to List<Category>
     }
 }
