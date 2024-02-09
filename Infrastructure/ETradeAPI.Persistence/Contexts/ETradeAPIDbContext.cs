@@ -44,10 +44,7 @@ public class ETradeAPIDbContext : IdentityDbContext<AppUser, AppRole, string>
             .WithOne(c => c.Order)
               .HasForeignKey<CompletedOrder>(c => c.OrderId);
 
-        builder.Entity<Product>()
-            .HasMany(p => p.Variants)
-            .WithOne(v => v.Product)
-            .HasForeignKey(c => c.Id);
+      
 
         builder.Entity<ProductVariant>()
             .HasMany(x => x.Options)

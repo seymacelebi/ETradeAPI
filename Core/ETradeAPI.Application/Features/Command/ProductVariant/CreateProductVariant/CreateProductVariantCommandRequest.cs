@@ -14,14 +14,19 @@ namespace ETradeAPI.Application.Features.Command.ProductVariant.CreateProductVar
         ////public List<VariantOptionCreateRequest> Options { get; set; }
         //public decimal Price { get; set; }
         //public int StockQuantity { get; set; }
-        public Guid ProductId { get; set; }
-        public string VariantType { get; set; }
-        public List<VariantOptionRequest> Options { get; set; }
+        //public Guid ProductId { get; set; }
+        //public string VariantType { get; set; }
+        //public List<VariantOptionRequest> Options { get; set; }
+        //public decimal Price { get; set; }
+        //public int StockQuantity { get; set; }
+        public string VariantName { get; set; }
+        public List<VariantOption> Options { get; set; }
         public decimal Price { get; set; }
         public int StockQuantity { get; set; }
     }
-    public class VariantOptionRequest
+    public class VariantOption
     {
+        public Guid OptionId { get; set; }  
         public string OptionName { get; set; }
     }
 }

@@ -9,8 +9,7 @@ namespace ETradeAPI.Application.Features.Command.ProductVariant.CreateProductVar
     public class CreateProductVariantCommandResponse
     {
         public Guid Id { get; set; }
-        public Guid ProductId { get; set; }
-        public string VariantType { get; set; }
+        public string VariantName { get; set; }
         public List<VariantOptionResponse> Options { get; set; }
         public decimal Price { get; set; }
         public int StockQuantity { get; set; }

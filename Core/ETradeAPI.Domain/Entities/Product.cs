@@ -18,6 +18,8 @@ namespace ETradeAPI.Domain.Entities
         public ICollection<BasketItem> BasketItems { get; set; }
         public List<ProductVariant> Variants { get; set; }
         public Category Category { get; set; }
+        public List<string>? ImagePath { get; set; }
+
 
     }
 }

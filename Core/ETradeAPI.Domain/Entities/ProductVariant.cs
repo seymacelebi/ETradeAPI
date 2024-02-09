@@ -9,10 +9,14 @@ namespace ETradeAPI.Domain.Entities
 {
     public class ProductVariant : BaseEntity
     {
-        public Guid ProductId { get; set; }
-        public string VariantType { get; set; }
+        //public Guid ProductId { get; set; }
+        //public string VariantType { get; set; }
+        //public List<VariantOption> Options { get; set; }
+        //public Product Product { get; set; }
+        //public decimal Price { get; set; }
+        //public int StockQuantity { get; set; }
+        public string VariantName { get; set; }
         public List<VariantOption> Options { get; set; }
-        public Product Product { get; set; }
         public decimal Price { get; set; }
         public int StockQuantity { get; set; }
 
