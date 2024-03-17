@@ -57,7 +57,12 @@ namespace ETradeAPI.Persistence.Services
                 Address = createOrder.Address,
                 Id = Guid.Parse(createOrder.BasketId),
                 Description = createOrder.Description,
-                OrderCode = orderCode
+                OrderCode = orderCode,
+                TotalAmount= createOrder.TotalAmount,
+                PaymentMethod= createOrder.PaymentMethod,
+                ShippingMethod= createOrder.ShippingMethod,
+                ShippingTrackingNumber= createOrder.ShippingTrackingNumber, 
+
             });
             await _orderWriteRepository.SaveAsync();
         }

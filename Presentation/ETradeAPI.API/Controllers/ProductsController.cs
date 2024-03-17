@@ -4,13 +4,8 @@ using ETradeAPI.Application.Enums;
 using ETradeAPI.Application.Features.Command.Product.CreateProduct;
 using ETradeAPI.Application.Features.Command.Product.DeleteProduct;
 using ETradeAPI.Application.Features.Command.Product.UpdateProduct;
-using ETradeAPI.Application.Features.Command.ProductImage.CreateProductImage;
-using ETradeAPI.Application.Features.Command.ProductImage.DeleteProductımage;
-using ETradeAPI.Application.Features.Command.ProductImage.UpdateProductImage;
 using ETradeAPI.Application.Features.Queries.Product.GetAllProduct;
 using ETradeAPI.Application.Features.Queries.Product.GetByIdProduct;
-using ETradeAPI.Application.Features.Queries.ProductImage.GetAllProductImage;
-using ETradeAPI.Application.Features.Queries.ProductImage.GetByIdProductImage;
 using ETradeAPI.Application.Repositories;
 using ETradeAPI.Application.RequestParameters;
 using ETradeAPI.Application.Services;
@@ -26,7 +21,7 @@ namespace ETradeAPI.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes= "Admin")]
+    [Authorize(AuthenticationSchemes = "Admin")]
 
     public class ProductsController : ControllerBase
     {
@@ -48,7 +43,7 @@ namespace ETradeAPI.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] GetAllProductQueryRequest getAllProductQueryRequest)
         {
-         GetAllProductQueryResponse response =  await _mediator.Send(getAllProductQueryRequest);
+            GetAllProductQueryResponse response = await _mediator.Send(getAllProductQueryRequest);
             return Ok(response);
         }
 
@@ -80,43 +75,18 @@ namespace ETradeAPI.API.Controllers
             DeleteProductCommandResponse response = await _mediator.Send(deleteProductCommandRequest);
             return Ok(response);
         }
-        [HttpPost("{id}/Image")]
-        [AuthorizeDefinition(Menu = "Product Image", ActionType = ActionType.Writing, Definition = "Create Product Image")]
-        public async Task<IActionResult> Post(CreateProductImageCommandRequest createProductImageCommandRequest)
-        {
-            CreateProductImageCommandResponse response = await _mediator.Send(createProductImageCommandRequest);
-            return Ok(response);
-        }
-        [HttpDelete("{Id}/Image")]
-        [AuthorizeDefinition(Menu = "Product Image", ActionType = ActionType.Deleting, Definition = "Delete Product Image")]
-        public async Task<IActionResult> Delete(DeleteProductImageCommandRequest deleteProductImageCommandRequest)
-        {
-            DeleteProductImageCommandResponse response = await _mediator.Send(deleteProductImageCommandRequest);
-            return Ok(response);
-        }
-        [HttpPut("{Id}/Image")]
-        [AuthorizeDefinition(Menu = "Product Image", ActionType = ActionType.Updating, Definition = "Update Product Image")]
-        public async Task<IActionResult> Uspdate(UpdateProductImageCommandRequest updateProductImageCommandRequest)
-        {
-            UpdateProductImageCommandResponse response = await _mediator.Send(updateProductImageCommandRequest);
-            return Ok(response);
-        }
-        [HttpGet("Image")]
-        [AuthorizeDefinition(Menu = "Product Image", ActionType = ActionType.Updating, Definition = "Update Product Image")]
-        public async Task<IActionResult> Get([FromQuery] GetAllProductImageQueryRequest getAllProductImageQueryRequest)
-        {
-            GetAllProductImageQueryResponse response = await _mediator.Send(getAllProductImageQueryRequest);
-            return Ok(response);
-        }
-        [HttpGet("{Id}")]
-        public async Task<IActionResult> Get([FromRoute] GetByIdProductImageQueryRequest getByIdProductImageQueryRequest)
-        {
-            GetByIdProductImageQueryResponse response = await _mediator.Send(getByIdProductImageQueryRequest);
-            return Ok(response);
-        }
 
+        //[HttpDelete("[action]/{Id}")]
+        //public async Task<IActionResult> DeleteProductImage([FromQuery, FromRoute]DeleteProductImageCommandRequest  deleteProductImageCommandRequest)
+        //{
 
+        //}
 
-
+        //[HttpPost("[action]")]
+        //public async Task<IActionResult> Upload()
+        //{
+        //    _fileService.UploadFileAsync("resource//product-images", Request.Form.Files);
+        //    return Ok();    
+        //}
     }
 }

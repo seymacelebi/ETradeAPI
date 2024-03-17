@@ -14,4 +14,6 @@ public class CreateProductCommandRequest : IRequest<CreateProductCommandResponse
     public int Stock { get; set; }
     public float Price { get; set; }
     public string Description { get; set; }
+    public List<string> ImagePath { get; set; } // ImagePath özelliğini ekleyin.
+
 }

@@ -42,6 +42,7 @@ namespace ETradeAPI.Application.Features.Command.Product.CreateProduct
                 Price = request.Price,
                 Stock = request.Stock,
                 Description = request.Description,
+                ImagePath = request.ImagePath
             });
 
             await _productWriteRepository.SaveAsync();
