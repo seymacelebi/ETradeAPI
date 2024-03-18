@@ -27,26 +27,7 @@ namespace ETradeAPI.Persistence.Services
             _completedOrderReadRepository = completedOrderReadRepository;
         }
 
-        public async Task<(bool, CompletedOrderDTO)> CompleteOrderAsync(string id)
-        {
-            Order? order = await _orderReadRepository.Table
-                .Include(o => o.Basket)
-                .ThenInclude(b => b.User)
-                .FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
 
-            if (order != null)
-            {
-                await _completedOrderWriteRepository.AddAsync(new() { OrderId = Guid.Parse(id) });
-                return (await _completedOrderWriteRepository.SaveAsync() > 0, new()
-                {
-                    OrderCode = order.OrderCode,
-                    OrderDate = order.CreateDate,
-                    Username = order.Basket.User.UserName,
-                    EMail = order.Basket.User.Email
-                });
-            }
-            return (false, null);
-        }
         public async Task CreateOrderAsync(CreateOrder createOrder)
         {
             var orderCode = (new Random().NextDouble() * 10000).ToString();
@@ -57,17 +38,10 @@ namespace ETradeAPI.Persistence.Services
                 Address = createOrder.Address,
                 Id = Guid.Parse(createOrder.BasketId),
                 Description = createOrder.Description,
-                OrderCode = orderCode,
-                TotalAmount= createOrder.TotalAmount,
-                PaymentMethod= createOrder.PaymentMethod,
-                ShippingMethod= createOrder.ShippingMethod,
-                ShippingTrackingNumber= createOrder.ShippingTrackingNumber, 
-
+                OrderCode = orderCode
             });
             await _orderWriteRepository.SaveAsync();
         }
-
-  
 
         public async Task<ListOrder> GetAllOrdersAsync(int page, int size)
         {
@@ -110,32 +84,9 @@ namespace ETradeAPI.Persistence.Services
                 }).ToListAsync()
             };
         }
-        //public async Task<SingleOrder> GetOrderByIdAsync(string id)
-        //{
-        //    var data = await _orderReadRepository.Table
-        //                         .Include(o => o.Basket)
-        //                             .ThenInclude(b => b.BasketItems)
-        //                                 .ThenInclude(bi => bi.Product)
-        //                                         .FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
 
-        //    return new()
-        //    {
-        //        Id = data.Id.ToString(),
-        //        BasketItems = data.Basket.BasketItems.Select(bi => new
-        //        {
-        //            bi.Product.Name,
-        //            bi.Product.Price,
-        //            bi.Quantity
-        //        }),
-        //        Address = data.Address,
-        //        CreatedDate = data.CreateDate,
-        //        Description = data.Description,
-        //        OrderCode = data.OrderCode
-        //    };
-        //}
         public async Task<SingleOrder> GetOrderByIdAsync(string id)
         {
-          
             var data = _orderReadRepository.Table
                                  .Include(o => o.Basket)
                                      .ThenInclude(b => b.BasketItems)
@@ -172,5 +123,27 @@ namespace ETradeAPI.Persistence.Services
                 Completed = data2.Completed
             };
         }
+
+        public async Task<(bool, CompletedOrderDTO)> CompleteOrderAsync(string id)
+        {
+            Order? order = await _orderReadRepository.Table
+                .Include(o => o.Basket)
+                .ThenInclude(b => b.User)
+                .FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
+
+            if (order != null)
+            {
+                await _completedOrderWriteRepository.AddAsync(new() { OrderId = Guid.Parse(id) });
+                return (await _completedOrderWriteRepository.SaveAsync() > 0, new()
+                {
+                    OrderCode = order.OrderCode,
+                    OrderDate = order.CreateDate,
+                    Username = order.Basket.User.UserName,
+                    EMail = order.Basket.User.Email
+                });
+            }
+            return (false, null);
+        }
     }
 }
+

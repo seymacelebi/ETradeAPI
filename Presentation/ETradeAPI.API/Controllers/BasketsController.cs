@@ -23,29 +23,33 @@ namespace ETradeAPI.API.Controllers
         {
             _mediator = mediator;
         }
+
         [HttpGet]
         [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Baskets, ActionType = ActionType.Reading, Definition = "Get Basket Items")]
-        public async Task<IActionResult> GetBasketItems([FromQuery]GetBasketItemsQueryRequest getBasketItemsQueryRequest)
+        public async Task<IActionResult> GetBasketItems([FromQuery] GetBasketItemsQueryRequest getBasketItemsQueryRequest)
         {
             List<GetBasketItemsQueryResponse> response = await _mediator.Send(getBasketItemsQueryRequest);
             return Ok(response);
         }
+
         [HttpPost]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Baskets, ActionType = ActionType.Writing, Definition = "Add Item To Basket ")]
-        public async Task<IActionResult> CreateBasketsItems(CreateBasketCommandRequest createBasketCommandRequest)
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Baskets, ActionType = ActionType.Writing, Definition = "Add Item To Basket")]
+        public async Task<IActionResult> AddItemToBasket(CreateBasketCommandRequest createBasketCommandRequest)
         {
-            CreateBasketCommandResponse response  = await _mediator.Send(createBasketCommandRequest);
+            CreateBasketCommandResponse response = await _mediator.Send(createBasketCommandRequest);
             return Ok(response);
         }
+
         [HttpPut]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Baskets, ActionType = ActionType.Updating, Definition = "Update Quantity ")]
-        public async Task<IActionResult> UpdateBasketItems(UpdateBasketCommandRequest updateBasketCommandRequest)
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Baskets, ActionType = ActionType.Updating, Definition = "Update Quantity")]
+        public async Task<IActionResult> UpdateQuantity(UpdateBasketCommandRequest updateBasketCommandRequest)
         {
             UpdateBasketCommandResponse response = await _mediator.Send(updateBasketCommandRequest);
             return Ok(response);
         }
+
         [HttpDelete("{BasketItemId}")]
-        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Baskets, ActionType = ActionType.Deleting, Definition = "Delete Basket Item ")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Baskets, ActionType = ActionType.Deleting, Definition = "Remove Basket Item")]
         public async Task<IActionResult> RemoveBasketItem([FromRoute] DeleteBasketCommandRequest deleteBasketCommandRequest)
         {
             DeleteBasketCommandResponse response = await _mediator.Send(deleteBasketCommandRequest);
