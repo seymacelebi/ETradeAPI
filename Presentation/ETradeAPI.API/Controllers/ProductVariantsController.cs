@@ -3,6 +3,8 @@ using ETradeAPI.Application.CustomAttributes;
 using ETradeAPI.Application.Enums;
 using ETradeAPI.Application.Features.Command.Product.CreateProduct;
 using ETradeAPI.Application.Features.Command.ProductVariant.CreateProductVariant;
+using ETradeAPI.Application.Features.Queries.Product.GetAllProduct;
+using ETradeAPI.Application.Features.Queries.ProductVariant.GetAllProductVariant;
 using ETradeAPI.Application.Repositories;
 using ETradeAPI.Application.Services;
 using ETradeAPI.Persistence.Repositories;
@@ -30,6 +32,12 @@ namespace ETradeAPI.API.Controllers
             _productVariantWriteRepository = productVariantWriteRepository;
            
             _mediator = mediator;
+        }
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] GetAllProductVariantQueryRequest getAllProductVariantQueryRequest)
+        {
+            GetAllProductVariantQueryResponse response = await _mediator.Send(getAllProductVariantQueryRequest);
+            return Ok(response);
         }
         [HttpPost]
         [AuthorizeDefinition(Menu = "Create Product Variant", ActionType = ActionType.Writing, Definition = "Create Product Variant")]

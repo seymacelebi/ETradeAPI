@@ -22,4 +22,8 @@
     <ProjectReference Include="..\ETradeAPI.Domain\ETradeAPI.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Queries\ProductVariant\GetByIdProductVariant\" />
+  </ItemGroup>
+
 </Project>
