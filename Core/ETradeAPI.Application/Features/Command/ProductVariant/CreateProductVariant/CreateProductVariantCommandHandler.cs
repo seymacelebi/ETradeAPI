@@ -1,13 +1,7 @@
-﻿using ETradeAPI.Application.Features.Command.Product.CreateProduct;
-using ETradeAPI.Application.Repositories;
+﻿using ETradeAPI.Application.Repositories;
 using ETradeAPI.Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Google.Apis.Requests.BatchRequest;
+
 
 namespace ETradeAPI.Application.Features.Command.ProductVariant.CreateProductVariant
 {
@@ -22,54 +16,101 @@ namespace ETradeAPI.Application.Features.Command.ProductVariant.CreateProductVar
             _productVariantWriteRepository = productVariantWriteRepository;
         }
 
-
         public async Task<CreateProductVariantCommandResponse> Handle(CreateProductVariantCommandRequest request, CancellationToken cancellationToken)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var productVariant = new Domain.Entities.ProductVariant
             {
-
                 VariantName = request.VariantName,
                 Price = request.Price,
                 StockQuantity = request.StockQuantity
             };
 
-            foreach (var optionDto in request.Options)
+            if (request.Options != null)
             {
-                var variantOption = new Domain.Entities.VariantOption
+                foreach (var optionDto in request.Options)
                 {
-                    Id = optionDto.OptionId,
-                    OptionName = optionDto.OptionName,
-                    ProductVariant = productVariant,
-                };
+                    if (optionDto == null)
+                    {
+                        continue; // veya uygun bir işlem yapabilirsiniz
+                    }
 
-                productVariant.Options.Add(variantOption);
+                    var variantOption = new Domain.Entities.VariantOption
+                    {
+                        Id = Guid.NewGuid(), // Yeni bir GUID oluşturuyoruz
+                        OptionName = optionDto.OptionName,
+                        ProductVariant = productVariant
+                    };
+
+                    if (productVariant.Options == null)
+                    {
+                        productVariant.Options = new List<Domain.Entities.VariantOption>();
+                    }
+
+                    productVariant.Options.Add(variantOption);
+                }
+            }
+
+            if (_productVariantWriteRepository == null)
+            {
+                throw new InvalidOperationException("_productVariantWriteRepository is null");
             }
 
             await _productVariantWriteRepository.AddAsync(productVariant);
 
             var response = new CreateProductVariantCommandResponse
             {
-                Id = productVariant.Id,
+                Id = productVariant.Id
             };
 
             return response;
         }
+
+
+
         //public async Task<CreateProductVariantCommandResponse> Handle(CreateProductVariantCommandRequest request, CancellationToken cancellationToken)
         //{
-        //    var entity = new Domain.Entities.ProductVariant
+        //    var productVariant = new Domain.Entities.ProductVariant
         //    {
+
         //        VariantName = request.VariantName,
         //        Price = request.Price,
-        //        StockQuantity = request.StockQuantity,
-        //        Options = request.Options.Distinct().Select(x => new VariantOption
-        //        {
-        //            OptionId = x.OptionId,
-        //            OptionName = x.OptionName,
-        //        }).ToList()
-
+        //        StockQuantity = request.StockQuantity
         //    };
-        //    await _productVariantWriteRepository.AddAsync(entity);
 
+        //    foreach (var optionDto in request.Options)
+        //    {
+        //        var variantOption = new Domain.Entities.VariantOption
+        //        {
+        //            Id = new Guid(),
+        //            OptionName = optionDto.OptionName,
+        //            ProductVariant = productVariant,
+        //        };
+
+        //        productVariant.Options.Add(variantOption);
+        //    }
+
+        //    await _productVariantWriteRepository.AddAsync(productVariant);
+
+        //    var response = new CreateProductVariantCommandResponse
+        //    {
+        //        Id = productVariant.Id,
+        //    };
+
+        //    return response;
         //}
+
     }
+}
+public class ProductVariantDto
+{
+    public Guid Id { get; set; }
+    public string VariantName { get; set; }
+    public List<VariantOption> Options { get; set; }
+    public decimal Price { get; set; }
+    public int StockQuantity { get; set; }
 }
