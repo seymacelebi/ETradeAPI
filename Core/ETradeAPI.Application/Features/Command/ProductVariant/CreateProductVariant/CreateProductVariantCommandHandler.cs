@@ -15,6 +15,71 @@ namespace ETradeAPI.Application.Features.Command.ProductVariant.CreateProductVar
             _productVariantReadRepository = productVariantReadRepository;
             _productVariantWriteRepository = productVariantWriteRepository;
         }
+        //public async Task<CreateProductVariantCommandResponse> Handle(CreateProductVariantCommandRequest request, CancellationToken cancellationToken)
+        //{
+        //    if (request == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(request));
+        //    }
+
+        //    var productVariant = new Domain.Entities.ProductVariant
+        //    {
+        //        VariantName = request.VariantName,
+        //        Price = request.Price,
+        //        StockQuantity = request.StockQuantity
+        //    };
+
+        //    if (request.Options != null)
+        //    {
+        //        foreach (var optionDto in request.Options)
+        //        {
+        //            if (optionDto == null)
+        //            {
+        //                continue;
+        //            }
+
+        //            var variantOption = new Domain.Entities.VariantOption
+        //            {
+        //                Id = Guid.NewGuid(),
+        //                OptionName = optionDto.OptionName,
+        //                ProductVariant = productVariant
+        //            };
+
+        //            if (productVariant.Options == null)
+        //            {
+        //                productVariant.Options = new List<Domain.Entities.VariantOption>();
+        //            }
+
+        //            productVariant.Options.Add(variantOption);
+        //        }
+        //    }
+
+        //    if (_productVariantWriteRepository == null)
+        //    {
+        //        throw new InvalidOperationException("_productVariantWriteRepository is null");
+        //    }
+
+        //    await _productVariantWriteRepository.AddAsync(productVariant);
+
+        //    // Dönüşüm: Domain.Entities.VariantOption'dan VariantOptionResponse'a
+        //    var optionResponses = productVariant.Options.Select(opt =>
+        //        new VariantOptionResponse
+        //        {
+        //            Id = opt.Id,
+        //            OptionName = opt.OptionName,
+        //        }).ToList();
+
+        //    var response = new CreateProductVariantCommandResponse
+        //    {
+        //        Id = productVariant.Id,
+        //        VariantName = productVariant.VariantName,
+        //        Price = productVariant.Price,
+        //        StockQuantity = productVariant.StockQuantity,
+        //        Options = optionResponses  // Dönüştürülmüş liste response'a atanıyor
+        //    };
+
+        //    return response;
+        //}
         public async Task<CreateProductVariantCommandResponse> Handle(CreateProductVariantCommandRequest request, CancellationToken cancellationToken)
         {
             if (request == null)
@@ -22,6 +87,7 @@ namespace ETradeAPI.Application.Features.Command.ProductVariant.CreateProductVar
                 throw new ArgumentNullException(nameof(request));
             }
 
+            // Yeni bir ProductVariant nesnesi oluşturuluyor
             var productVariant = new Domain.Entities.ProductVariant
             {
                 VariantName = request.VariantName,
@@ -29,6 +95,7 @@ namespace ETradeAPI.Application.Features.Command.ProductVariant.CreateProductVar
                 StockQuantity = request.StockQuantity
             };
 
+            // Eğer request.Options null değilse, bu döngü çalışacak
             if (request.Options != null)
             {
                 foreach (var optionDto in request.Options)
@@ -38,6 +105,7 @@ namespace ETradeAPI.Application.Features.Command.ProductVariant.CreateProductVar
                         continue;
                     }
 
+                    // Yeni bir VariantOption nesnesi oluşturuluyor
                     var variantOption = new Domain.Entities.VariantOption
                     {
                         Id = Guid.NewGuid(),
@@ -45,30 +113,35 @@ namespace ETradeAPI.Application.Features.Command.ProductVariant.CreateProductVar
                         ProductVariant = productVariant
                     };
 
+                    // Eğer productVariant.Options null ise, yeni bir liste oluşturuluyor
                     if (productVariant.Options == null)
                     {
                         productVariant.Options = new List<Domain.Entities.VariantOption>();
                     }
 
+                    // variantOption, productVariant.Options listesine ekleniyor
                     productVariant.Options.Add(variantOption);
                 }
             }
 
+            // _productVariantWriteRepository null olup olmadığını kontrol edin
             if (_productVariantWriteRepository == null)
             {
                 throw new InvalidOperationException("_productVariantWriteRepository is null");
             }
 
+            // Veritabanına ekleniyor
             await _productVariantWriteRepository.AddAsync(productVariant);
+            await _productVariantWriteRepository.SaveAsync();
 
-            // Dönüşüm: Domain.Entities.VariantOption'dan VariantOptionResponse'a
-            var optionResponses = productVariant.Options.Select(opt =>
-                new VariantOptionResponse
-                {
-                    Id = opt.Id,
-                    OptionName = opt.OptionName,
-                }).ToList();
+            // VariantOption nesnelerini VariantOptionResponse nesnelerine dönüştür
+            var optionResponses = productVariant.Options.Select(opt => new VariantOptionResponse
+            {
+                Id = opt.Id,
+                OptionName = opt.OptionName
+            }).ToList();
 
+            // Response nesnesi oluşturuluyor ve dönülüyor
             var response = new CreateProductVariantCommandResponse
             {
                 Id = productVariant.Id,

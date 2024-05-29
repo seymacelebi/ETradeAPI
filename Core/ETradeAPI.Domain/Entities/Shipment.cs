@@ -7,10 +7,15 @@ using System.Threading.Tasks;
 
 namespace ETradeAPI.Domain.Entities
 {
-    public class CompletedOrder :BaseEntity
+    public class Shipment :BaseEntity
     {
         public Guid OrderId { get; set; }
+        public DateTime ShipmentDate { get; set; }
+        public DateTime DeliveryDate { get; set; }
+        public string ShippingMethod { get; set; }
+        public string TrackingNumber { get; set; }
 
+        // Navigation property
         public Order Order { get; set; }
     }
 }

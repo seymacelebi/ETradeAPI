@@ -20,6 +20,9 @@ namespace ETradeAPI.Domain.Entities
         public Category Category { get; set; }
         public List<string>? ImagePath { get; set; }
 
+        public ICollection<ProductReview> ProductReviews { get; set; }
+        public ICollection<ProductDiscount> ProductDiscounts { get; set; } // New relationship
+
 
     }
 }

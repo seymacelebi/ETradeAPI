@@ -22,34 +22,103 @@ public class ETradeAPIDbContext : IdentityDbContext<AppUser, AppRole, string>
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Basket> Baskets { get; set; }
     public DbSet<BasketItem> BasketItems { get; set; }
-    public DbSet<CompletedOrder> CompletedOrders { get; set; }
     public DbSet<Menu> Menus { get; set; }
     public DbSet<Endpoint> Endpoints { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<ProductVariant> ProductVariants { get; set; }
     public DbSet<VariantOption> VariantOptions { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+    public DbSet<Payment> Payments { get; set; }
+    public DbSet<Address> Addresses { get; set; }
+    public DbSet<Shipment> Shipments { get; set; } // New DbSet
+    public DbSet<Discount> Discounts { get; set; } // New DbSet
+    public DbSet<ProductDiscount> ProductDiscounts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.Entity<Order>()
             .HasKey(b => b.Id);
 
-        builder.Entity<Basket>()
-            .HasOne(b => b.Order)
-            .WithOne(o => o.Basket)
-            .HasForeignKey<Order>(b => b.Id);
+        //builder.Entity<Basket>()
+        //    .HasOne(b => b.Order)
+        //    .WithOne(o => o.Basket)
+        //    .HasForeignKey<Order>(b => b.Id);
+
+        //builder.Entity<Order>()
+        //    .HasOne(o => o.CompletedOrder)
+        //    .WithOne(c => c.Order)
+        //      .HasForeignKey<CompletedOrder>(c => c.OrderId);
 
         builder.Entity<Order>()
-            .HasOne(o => o.CompletedOrder)
-            .WithOne(c => c.Order)
-              .HasForeignKey<CompletedOrder>(c => c.OrderId);
+            .HasOne(o => o.Customer)
+            .WithMany(c => c.Orders)
+            .HasForeignKey(o => o.CustomerId);
 
-      
+        builder.Entity<Address>()
+           .HasOne(a => a.Customer)
+           .WithMany(c => c.Addresses)
+           .HasForeignKey(a => a.CustomerId);
+
 
         builder.Entity<ProductVariant>()
             .HasMany(x => x.Options)
             .WithOne(o => o.ProductVariant)
             .HasForeignKey(d => d.ProductVariantId);
+
+        // Order - OrderItem ilişkisinin tanımı
+        builder.Entity<Order>()
+            .HasMany(o => o.OrderItems)
+            .WithOne(oi => oi.Order)
+            .HasForeignKey(oi => oi.OrderId);
+
+        // OrderItem - Product ilişkisinin tanımı
+        builder.Entity<OrderItem>()
+            .HasOne(oi => oi.Product)
+            .WithMany()
+            .HasForeignKey(oi => oi.ProductId);
+
+        // Order - Payment ilişkisinin tanımı
+        builder.Entity<Order>()
+            .HasMany(o => o.Payments)
+            .WithOne(p => p.Order)
+            .HasForeignKey(p => p.OrderId);
+        //basket-basketıtem ilişkisi
+        builder.Entity<Basket>()
+           .HasOne(c => c.Customer)
+           .WithOne(cu => cu.Basket)
+           .HasForeignKey<Basket>(c => c.CustomerId)
+           .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<BasketItem>()
+            .HasOne(ci => ci.Basket)
+            .WithMany(c => c.BasketItems)
+            .HasForeignKey(ci => ci.BasketId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<BasketItem>()
+            .HasOne(ci => ci.Product)
+            .WithMany()
+            .HasForeignKey(ci => ci.ProductId)
+            .OnDelete(DeleteBehavior.Restrict);
+        //shipment
+        builder.Entity<Shipment>()
+           .HasOne(s => s.Order)
+           .WithMany(o => o.Shipments)
+           .HasForeignKey(s => s.OrderId)
+           .OnDelete(DeleteBehavior.Cascade);
+
+        // Configuring Discount and ProductDiscount relationships
+        builder.Entity<ProductDiscount>()
+            .HasOne(pd => pd.Product)
+            .WithMany(p => p.ProductDiscounts)
+            .HasForeignKey(pd => pd.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<ProductDiscount>()
+            .HasOne(pd => pd.Discount)
+            .WithMany(d => d.ProductDiscounts)
+            .HasForeignKey(pd => pd.DiscountId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         //modelBuilder.Entity<ProductVariant>()
         //  .HasMany(x => x.Options)

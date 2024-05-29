@@ -17,30 +17,60 @@ namespace ETradeAPI.Application.Features.Queries.ProductVariant.GetAllProductVar
         {
             _productVariantReadRepository = productVariantReadRepository;
         }
+        //public async Task<GetAllProductVariantQueryResponse> Handle(GetAllProductVariantQueryRequest request, CancellationToken cancellationToken)
+        //{
+        //    var query = _productVariantReadRepository.GetAll(false);
+
+        //    var totalCount = query.Count();
+
+        //    var productVariant = query
+        //        .Skip(request.Page * request.Size)
+        //        .Take(request.Size)
+        //        .Select(p => new
+        //        {
+        //           p.Id,
+        //           p.VariantName,
+        //           p.Price,
+        //           p.StockQuantity,
+        //        })
+        //        .ToList();
+
+        //    return new GetAllProductVariantQueryResponse
+        //    {
+
+        //        ProductsVariant = productVariant,
+        //        TotalCount = totalCount
+        //    };
+        //}
         public async Task<GetAllProductVariantQueryResponse> Handle(GetAllProductVariantQueryRequest request, CancellationToken cancellationToken)
         {
             var query = _productVariantReadRepository.GetAll(false);
 
             var totalCount = query.Count();
 
-            var productVariant = query
+            var productVariants = query
                 .Skip(request.Page * request.Size)
                 .Take(request.Size)
                 .Select(p => new
                 {
-                   p.Id,
-                   p.VariantName,
-                   p.Price,
-                   p.StockQuantity,
+                    p.Id,
+                    p.VariantName,
+                    p.Price,
+                    p.StockQuantity,
+                    Options = p.Options.Select(o => new
+                    {
+                        o.Id,
+                        o.OptionName
+                    }).ToList()
                 })
                 .ToList();
 
             return new GetAllProductVariantQueryResponse
             {
-
-                ProductsVariant = productVariant,
+                ProductsVariant = productVariants,
                 TotalCount = totalCount
             };
         }
+
     }
 }
