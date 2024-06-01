@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -69,17 +70,22 @@ namespace ETradeAPI.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customers",
+                name: "Discounts",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
+                    DiscountCode = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    DiscountPercentage = table.Column<int>(type: "integer", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    isActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.PrimaryKey("PK_Discounts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -203,20 +209,28 @@ namespace ETradeAPI.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Baskets",
+                name: "Customers",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: false),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Phone = table.Column<string>(type: "text", nullable: false),
+                    Adress = table.Column<string>(type: "text", nullable: false),
+                    City = table.Column<string>(type: "text", nullable: false),
+                    Country = table.Column<string>(type: "text", nullable: false),
+                    PostalCode = table.Column<string>(type: "text", nullable: false),
+                    AppUserId = table.Column<string>(type: "text", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Baskets", x => x.Id);
+                    table.PrimaryKey("PK_Customers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Baskets_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Customers_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -232,6 +246,7 @@ namespace ETradeAPI.Persistence.Migrations
                     Stock = table.Column<int>(type: "integer", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
+                    ImagePath = table.Column<List<string>>(type: "text[]", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -271,53 +286,136 @@ namespace ETradeAPI.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "Addresses",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Address = table.Column<string>(type: "text", nullable: false),
-                    OrderCode = table.Column<string>(type: "text", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AddressType = table.Column<string>(type: "text", nullable: false),
+                    StreetAddress = table.Column<string>(type: "text", nullable: false),
+                    City = table.Column<string>(type: "text", nullable: false),
+                    Country = table.Column<string>(type: "text", nullable: false),
+                    PostalCode = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_Baskets_Id",
-                        column: x => x.Id,
-                        principalTable: "Baskets",
+                        name: "FK_Addresses_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "BasketItems",
+                name: "Baskets",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    BasketId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AppUserId = table.Column<string>(type: "text", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BasketItems", x => x.Id);
+                    table.PrimaryKey("PK_Baskets", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BasketItems_Baskets_BasketId",
-                        column: x => x.BasketId,
-                        principalTable: "Baskets",
+                        name: "FK_Baskets_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Baskets_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductDiscounts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DiscountId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductDiscounts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductDiscounts_Discounts_DiscountId",
+                        column: x => x.DiscountId,
+                        principalTable: "Discounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BasketItems_Products_ProductId",
+                        name: "FK_ProductDiscounts_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductReview",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProductId = table.Column<int>(type: "integer", nullable: false),
+                    CsustomerId = table.Column<int>(type: "integer", nullable: false),
+                    Rating = table.Column<int>(type: "integer", nullable: false),
+                    Comment = table.Column<string>(type: "text", nullable: false),
+                    ProductId1 = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductReview", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductReview_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductReview_Products_ProductId1",
+                        column: x => x.ProductId1,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductVariants",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    VariantName = table.Column<string>(type: "text", nullable: false),
+                    Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    StockQuantity = table.Column<int>(type: "integer", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductVariants", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductVariants_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -345,24 +443,187 @@ namespace ETradeAPI.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CompletedOrders",
+                name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CustomerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    PaymentMethod = table.Column<string>(type: "text", nullable: false),
+                    ShippingAddressId = table.Column<int>(type: "integer", nullable: false),
+                    BillingAddressId = table.Column<int>(type: "integer", nullable: false),
+                    ShippingAddressId1 = table.Column<Guid>(type: "uuid", nullable: false),
+                    BillingAddressId1 = table.Column<Guid>(type: "uuid", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CompletedOrders", x => x.Id);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CompletedOrders_Orders_OrderId",
+                        name: "FK_Orders_Addresses_BillingAddressId1",
+                        column: x => x.BillingAddressId1,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_Addresses_ShippingAddressId1",
+                        column: x => x.ShippingAddressId1,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orders_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BasketItems",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    BasketId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    ProductId1 = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BasketItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BasketItems_Baskets_BasketId",
+                        column: x => x.BasketId,
+                        principalTable: "Baskets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BasketItems_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_BasketItems_Products_ProductId1",
+                        column: x => x.ProductId1,
+                        principalTable: "Products",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VariantOptions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    OptionName = table.Column<string>(type: "text", nullable: false),
+                    ProductVariantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VariantOptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VariantOptions_ProductVariants_ProductVariantId",
+                        column: x => x.ProductVariantId,
+                        principalTable: "ProductVariants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderItems",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    OrderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProductName = table.Column<string>(type: "text", nullable: false),
+                    ProductPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    OrderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    PaymentMethod = table.Column<string>(type: "text", nullable: false),
+                    PaymentStatus = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payments_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Shipments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    OrderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ShipmentDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DeliveryDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ShippingMethod = table.Column<string>(type: "text", nullable: false),
+                    TrackingNumber = table.Column<string>(type: "text", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Shipments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Shipments_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_CustomerId",
+                table: "Addresses",
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppRoleEndpoint_RolesId",
@@ -417,15 +678,25 @@ namespace ETradeAPI.Persistence.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Baskets_UserId",
-                table: "Baskets",
-                column: "UserId");
+                name: "IX_BasketItems_ProductId1",
+                table: "BasketItems",
+                column: "ProductId1");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompletedOrders_OrderId",
-                table: "CompletedOrders",
-                column: "OrderId",
+                name: "IX_Baskets_AppUserId",
+                table: "Baskets",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Baskets_CustomerId",
+                table: "Baskets",
+                column: "CustomerId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_AppUserId",
+                table: "Customers",
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Endpoints_MenuId",
@@ -433,9 +704,74 @@ namespace ETradeAPI.Persistence.Migrations
                 column: "MenuId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_OrderId",
+                table: "OrderItems",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_ProductId",
+                table: "OrderItems",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_BillingAddressId1",
+                table: "Orders",
+                column: "BillingAddressId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_CustomerId",
+                table: "Orders",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_ShippingAddressId1",
+                table: "Orders",
+                column: "ShippingAddressId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_OrderId",
+                table: "Payments",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDiscounts_DiscountId",
+                table: "ProductDiscounts",
+                column: "DiscountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDiscounts_ProductId",
+                table: "ProductDiscounts",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductReview_CustomerId",
+                table: "ProductReview",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductReview_ProductId1",
+                table: "ProductReview",
+                column: "ProductId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductVariants_ProductId",
+                table: "ProductVariants",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Shipments_OrderId",
+                table: "Shipments",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VariantOptions_ProductVariantId",
+                table: "VariantOptions",
+                column: "ProductVariantId");
         }
 
         /// <inheritdoc />
@@ -463,10 +799,22 @@ namespace ETradeAPI.Persistence.Migrations
                 name: "BasketItems");
 
             migrationBuilder.DropTable(
-                name: "CompletedOrders");
+                name: "OrderItems");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "Payments");
+
+            migrationBuilder.DropTable(
+                name: "ProductDiscounts");
+
+            migrationBuilder.DropTable(
+                name: "ProductReview");
+
+            migrationBuilder.DropTable(
+                name: "Shipments");
+
+            migrationBuilder.DropTable(
+                name: "VariantOptions");
 
             migrationBuilder.DropTable(
                 name: "Endpoints");
@@ -475,19 +823,31 @@ namespace ETradeAPI.Persistence.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Baskets");
+
+            migrationBuilder.DropTable(
+                name: "Discounts");
 
             migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
+                name: "ProductVariants");
+
+            migrationBuilder.DropTable(
                 name: "Menus");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Addresses");
 
             migrationBuilder.DropTable(
-                name: "Baskets");
+                name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Customers");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

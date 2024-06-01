@@ -39,15 +39,7 @@ public class ETradeAPIDbContext : IdentityDbContext<AppUser, AppRole, string>
         builder.Entity<Order>()
             .HasKey(b => b.Id);
 
-        //builder.Entity<Basket>()
-        //    .HasOne(b => b.Order)
-        //    .WithOne(o => o.Basket)
-        //    .HasForeignKey<Order>(b => b.Id);
-
-        //builder.Entity<Order>()
-        //    .HasOne(o => o.CompletedOrder)
-        //    .WithOne(c => c.Order)
-        //      .HasForeignKey<CompletedOrder>(c => c.OrderId);
+  
 
         builder.Entity<Order>()
             .HasOne(o => o.Customer)
@@ -119,6 +111,12 @@ public class ETradeAPIDbContext : IdentityDbContext<AppUser, AppRole, string>
             .WithMany(d => d.ProductDiscounts)
             .HasForeignKey(pd => pd.DiscountId)
             .OnDelete(DeleteBehavior.Cascade);
+        //user-customer relationships
+        builder.Entity<Customer>()
+          .HasOne(c => c.AppUser)
+          .WithMany(u => u.Customers)
+          .HasForeignKey(c => c.AppUserId)
+          .OnDelete(DeleteBehavior.Cascade);
 
         //modelBuilder.Entity<ProductVariant>()
         //  .HasMany(x => x.Options)

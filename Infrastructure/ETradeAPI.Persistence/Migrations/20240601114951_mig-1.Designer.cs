@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ETradeAPI.Persistence.Migrations
 {
     [DbContext(typeof(ETradeAPIDbContext))]
-    [Migration("20240208144036_mig-deneme")]
-    partial class migdeneme
+    [Migration("20240601114951_mig-1")]
+    partial class mig1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,25 +41,78 @@ namespace ETradeAPI.Persistence.Migrations
                     b.ToTable("AppRoleEndpoint");
                 });
 
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Address", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AddressType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("StreetAddress")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Addresses");
+                });
+
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Basket", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("CustomerId")
+                        .IsUnique();
 
                     b.ToTable("Baskets");
                 });
@@ -79,6 +132,9 @@ namespace ETradeAPI.Persistence.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("ProductId1")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
@@ -90,6 +146,8 @@ namespace ETradeAPI.Persistence.Migrations
                     b.HasIndex("BasketId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductId1");
 
                     b.ToTable("BasketItems");
                 });
@@ -115,29 +173,6 @@ namespace ETradeAPI.Persistence.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("ETradeAPI.Domain.Entities.CompletedOrder", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
-
-                    b.ToTable("CompletedOrders");
-                });
-
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Customer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -145,6 +180,18 @@ namespace ETradeAPI.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Adress")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -167,12 +214,55 @@ namespace ETradeAPI.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AppUserId");
+
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Discount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DiscountCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("DiscountPercentage")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Discounts");
                 });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Endpoint", b =>
@@ -337,29 +427,141 @@ namespace ETradeAPI.Persistence.Migrations
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("BillingAddressId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("BillingAddressId1")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PaymentMethod")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("OrderCode")
+                    b.Property<int>("ShippingAddressId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("ShippingAddressId1")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("numeric");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BillingAddressId1");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("ShippingAddressId1");
+
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.OrderItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("ProductPrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Payment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Product", b =>
@@ -401,6 +603,73 @@ namespace ETradeAPI.Persistence.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.ProductDiscount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("DiscountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DiscountId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductDiscounts");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.ProductReview", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("CsustomerId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("ProductId1")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("ProductId1");
+
+                    b.ToTable("ProductReview");
+                });
+
             modelBuilder.Entity("ETradeAPI.Domain.Entities.ProductVariant", b =>
                 {
                     b.Property<Guid>("Id")
@@ -431,6 +700,42 @@ namespace ETradeAPI.Persistence.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductVariants");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Shipment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DeliveryDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ShipmentDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ShippingMethod")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TrackingNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Shipments");
                 });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.VariantOption", b =>
@@ -580,15 +885,30 @@ namespace ETradeAPI.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ETradeAPI.Domain.Entities.Basket", b =>
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Address", b =>
                 {
-                    b.HasOne("ETradeAPI.Domain.Entities.Identity.AppUser", "User")
-                        .WithMany("Baskets")
-                        .HasForeignKey("UserId")
+                    b.HasOne("ETradeAPI.Domain.Entities.Customer", "Customer")
+                        .WithMany("Addresses")
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Basket", b =>
+                {
+                    b.HasOne("ETradeAPI.Domain.Entities.Identity.AppUser", null)
+                        .WithMany("Baskets")
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("ETradeAPI.Domain.Entities.Customer", "Customer")
+                        .WithOne("Basket")
+                        .HasForeignKey("ETradeAPI.Domain.Entities.Basket", "CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.BasketItem", b =>
@@ -600,25 +920,29 @@ namespace ETradeAPI.Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("ETradeAPI.Domain.Entities.Product", "Product")
-                        .WithMany("BasketItems")
+                        .WithMany()
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("ETradeAPI.Domain.Entities.Product", null)
+                        .WithMany("BasketItems")
+                        .HasForeignKey("ProductId1");
 
                     b.Navigation("Basket");
 
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ETradeAPI.Domain.Entities.CompletedOrder", b =>
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Customer", b =>
                 {
-                    b.HasOne("ETradeAPI.Domain.Entities.Order", "Order")
-                        .WithOne("CompletedOrder")
-                        .HasForeignKey("ETradeAPI.Domain.Entities.CompletedOrder", "OrderId")
+                    b.HasOne("ETradeAPI.Domain.Entities.Identity.AppUser", "AppUser")
+                        .WithMany("Customers")
+                        .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Order");
+                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Endpoint", b =>
@@ -634,13 +958,59 @@ namespace ETradeAPI.Persistence.Migrations
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Order", b =>
                 {
-                    b.HasOne("ETradeAPI.Domain.Entities.Basket", "Basket")
-                        .WithOne("Order")
-                        .HasForeignKey("ETradeAPI.Domain.Entities.Order", "Id")
+                    b.HasOne("ETradeAPI.Domain.Entities.Address", "BillingAddress")
+                        .WithMany()
+                        .HasForeignKey("BillingAddressId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Basket");
+                    b.HasOne("ETradeAPI.Domain.Entities.Customer", "Customer")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ETradeAPI.Domain.Entities.Address", "ShippingAddress")
+                        .WithMany()
+                        .HasForeignKey("ShippingAddressId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BillingAddress");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("ShippingAddress");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.OrderItem", b =>
+                {
+                    b.HasOne("ETradeAPI.Domain.Entities.Order", "Order")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ETradeAPI.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Payment", b =>
+                {
+                    b.HasOne("ETradeAPI.Domain.Entities.Order", "Order")
+                        .WithMany("Payments")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Product", b =>
@@ -654,11 +1024,60 @@ namespace ETradeAPI.Persistence.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.ProductDiscount", b =>
+                {
+                    b.HasOne("ETradeAPI.Domain.Entities.Discount", "Discount")
+                        .WithMany("ProductDiscounts")
+                        .HasForeignKey("DiscountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ETradeAPI.Domain.Entities.Product", "Product")
+                        .WithMany("ProductDiscounts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Discount");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.ProductReview", b =>
+                {
+                    b.HasOne("ETradeAPI.Domain.Entities.Customer", "Customer")
+                        .WithMany("ProductReviews")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ETradeAPI.Domain.Entities.Product", "Product")
+                        .WithMany("ProductReviews")
+                        .HasForeignKey("ProductId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("ETradeAPI.Domain.Entities.ProductVariant", b =>
                 {
                     b.HasOne("ETradeAPI.Domain.Entities.Product", null)
                         .WithMany("Variants")
                         .HasForeignKey("ProductId");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Shipment", b =>
+                {
+                    b.HasOne("ETradeAPI.Domain.Entities.Order", "Order")
+                        .WithMany("Shipments")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.VariantOption", b =>
@@ -726,9 +1145,6 @@ namespace ETradeAPI.Persistence.Migrations
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Basket", b =>
                 {
                     b.Navigation("BasketItems");
-
-                    b.Navigation("Order")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Category", b =>
@@ -736,9 +1152,28 @@ namespace ETradeAPI.Persistence.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Customer", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("Basket")
+                        .IsRequired();
+
+                    b.Navigation("Orders");
+
+                    b.Navigation("ProductReviews");
+                });
+
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Discount", b =>
+                {
+                    b.Navigation("ProductDiscounts");
+                });
+
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Identity.AppUser", b =>
                 {
                     b.Navigation("Baskets");
+
+                    b.Navigation("Customers");
                 });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Menu", b =>
@@ -748,13 +1183,20 @@ namespace ETradeAPI.Persistence.Migrations
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Order", b =>
                 {
-                    b.Navigation("CompletedOrder")
-                        .IsRequired();
+                    b.Navigation("OrderItems");
+
+                    b.Navigation("Payments");
+
+                    b.Navigation("Shipments");
                 });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Product", b =>
                 {
                     b.Navigation("BasketItems");
+
+                    b.Navigation("ProductDiscounts");
+
+                    b.Navigation("ProductReviews");
 
                     b.Navigation("Variants");
                 });

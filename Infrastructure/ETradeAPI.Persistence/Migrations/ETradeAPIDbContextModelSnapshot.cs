@@ -180,6 +180,10 @@ namespace ETradeAPI.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("text");
@@ -215,6 +219,8 @@ namespace ETradeAPI.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("Customers");
                 });
@@ -925,6 +931,17 @@ namespace ETradeAPI.Persistence.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("ETradeAPI.Domain.Entities.Customer", b =>
+                {
+                    b.HasOne("ETradeAPI.Domain.Entities.Identity.AppUser", "AppUser")
+                        .WithMany("Customers")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Endpoint", b =>
                 {
                     b.HasOne("ETradeAPI.Domain.Entities.Menu", "Menu")
@@ -1152,6 +1169,8 @@ namespace ETradeAPI.Persistence.Migrations
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Identity.AppUser", b =>
                 {
                     b.Navigation("Baskets");
+
+                    b.Navigation("Customers");
                 });
 
             modelBuilder.Entity("ETradeAPI.Domain.Entities.Menu", b =>

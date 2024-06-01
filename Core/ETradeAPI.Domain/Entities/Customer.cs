@@ -1,4 +1,5 @@
 ﻿using ETradeAPI.Domain.Entities.Common;
+using ETradeAPI.Domain.Entities.Identity;
 
 namespace ETradeAPI.Domain.Entities;
 
@@ -17,4 +18,7 @@ public class Customer :BaseEntity
     public ICollection<Address> Addresses { get; set; }
 
     public Basket Basket { get; set; }
+
+    public string AppUserId { get; set; }
+    public AppUser AppUser { get; set; }
 }
