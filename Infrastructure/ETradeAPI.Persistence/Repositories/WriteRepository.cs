@@ -43,7 +43,7 @@ public class WriteRepository<T> : IWriteRepository<T> where T : BaseEntity
     }
     public async Task<bool> RemoveAsync(string id)
     {
-        T model = await Table.FirstOrDefaultAsync(data => data.Id == Guid.Parse(id));
+        T model = await Table.FirstOrDefaultAsync(data => data.Id == Int16.Parse(id));
         return Remove(model);
     }
     public bool Update(T model)

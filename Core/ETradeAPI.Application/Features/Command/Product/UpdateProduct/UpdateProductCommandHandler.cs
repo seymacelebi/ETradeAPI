@@ -31,7 +31,7 @@ namespace ETradeAPI.Application.Features.Command.Product.UpdateProduct
             product.Name = request.Name;
             product.Price = request.Price;
             product.Description = request.Description;
-            product.CategoryId = (Guid.Parse(request.CategoryId));
+            product.CategoryId = (Int16.Parse(request.CategoryId));
             await _productWriteRepository.SaveAsync();
             _logger.LogInformation("Product güncellendi...");
             return new();

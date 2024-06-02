@@ -111,17 +111,29 @@ public class ETradeAPIDbContext : IdentityDbContext<AppUser, AppRole, string>
             .WithMany(d => d.ProductDiscounts)
             .HasForeignKey(pd => pd.DiscountId)
             .OnDelete(DeleteBehavior.Cascade);
-        //user-customer relationships
-        builder.Entity<Customer>()
-          .HasOne(c => c.AppUser)
-          .WithMany(u => u.Customers)
-          .HasForeignKey(c => c.AppUserId)
-          .OnDelete(DeleteBehavior.Cascade);
 
         //modelBuilder.Entity<ProductVariant>()
         //  .HasMany(x => x.Options)
         //  .WithOne(o => o.ProductVariant)
         //  .HasForeignKey(d => d.ProductVariantId);
+
+        builder.Entity<ProductSupplier>()
+               .HasKey(ps => new { ps.ProductId, ps.SupplierId });
+
+        builder.Entity<ProductSupplier>()
+            .HasOne(ps => ps.Product)
+            .WithMany(p => p.ProductSuppliers)
+            .HasForeignKey(ps => ps.ProductId);
+
+        builder.Entity<ProductSupplier>()
+            .HasOne(ps => ps.Supplier)
+            .WithMany(s => s.ProductSuppliers)
+            .HasForeignKey(ps => ps.SupplierId);
+
+        builder.Entity<AppUser>()
+        .HasOne(a => a.Customer)
+        .WithOne(c => c.AppUser)
+        .HasForeignKey<Customer>(c => c.AppUserId);
 
         base.OnModelCreating(builder);
 

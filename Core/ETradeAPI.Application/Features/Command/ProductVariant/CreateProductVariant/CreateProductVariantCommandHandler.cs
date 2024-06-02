@@ -106,12 +106,19 @@ namespace ETradeAPI.Application.Features.Command.ProductVariant.CreateProductVar
                     }
 
                     // Yeni bir VariantOption nesnesi oluşturuluyor
+                    //var variantOption = new Domain.Entities.VariantOption
+                    //{
+                    //    Id = Guid.NewGuid(),
+                    //    OptionName = optionDto.OptionName,
+                    //    ProductVariant = productVariant
+                    //};
                     var variantOption = new Domain.Entities.VariantOption
                     {
-                        Id = Guid.NewGuid(),
                         OptionName = optionDto.OptionName,
                         ProductVariant = productVariant
+                        // Id burada belirtilmez ve veritabanı bu değeri otomatik olarak oluşturur.
                     };
+
 
                     // Eğer productVariant.Options null ise, yeni bir liste oluşturuluyor
                     if (productVariant.Options == null)

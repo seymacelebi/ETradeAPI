@@ -15,6 +15,8 @@ namespace ETradeAPI.Domain.Entities.Identity
         public ICollection<Basket> Baskets { get; set; }
 
         // Navigation property for related Customers
-        public ICollection<Customer> Customers { get; set; }
+        // public ICollection<Customer> Customers { get; set; }
+        public Customer Customer { get; set; }
+
     }
 }

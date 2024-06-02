@@ -9,8 +9,8 @@ namespace ETradeAPI.Domain.Entities
 {
     public class ProductDiscount : BaseEntity
     {
-        public Guid ProductId { get; set; }
-        public Guid DiscountId { get; set; }
+        public int ProductId { get; set; }
+        public int DiscountId { get; set; }
 
         public Discount Discount { get; set; }
         public Product Product { get; set; }

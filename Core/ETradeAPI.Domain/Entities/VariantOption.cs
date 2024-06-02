@@ -10,7 +10,7 @@ namespace ETradeAPI.Domain.Entities
     public class VariantOption : BaseEntity
     {
         public string OptionName { get; set; }
-        public Guid ProductVariantId { get; set; }
+        public int ProductVariantId { get; set; }
         public ProductVariant ProductVariant { get; set; }
     }
 }

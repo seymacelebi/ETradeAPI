@@ -10,7 +10,7 @@ namespace ETradeAPI.Application.Features.Command.ProductImage.DeleteProductımag
 {
     public class DeleteProductImageCommandRequest : IRequest<DeleteProductImageCommandResponse>
     {
-        public Guid ProductId { get; set; }
+        public int ProductId { get; set; }
         public List<string> ImagePaths { get; set; }
     }
 }

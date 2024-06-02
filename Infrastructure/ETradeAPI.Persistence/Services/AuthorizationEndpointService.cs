@@ -44,7 +44,6 @@ namespace ETradeAPI.Persistence.Services
             {
                 _menu = new()
                 {
-                    Id = Guid.NewGuid(),
                     Name = menu
                 };
                 await _menuWriteRepository.AddAsync(_menu);
@@ -66,7 +65,6 @@ namespace ETradeAPI.Persistence.Services
                     ActionType = action.ActionType,
                     HttpType = action.HttpType,
                     Definition = action.Definition,
-                    Id = Guid.NewGuid(),
                     Menu = _menu
                 };
 

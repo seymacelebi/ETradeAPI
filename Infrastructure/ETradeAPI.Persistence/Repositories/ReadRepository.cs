@@ -49,7 +49,7 @@ namespace ETradeAPI.Persistence.Repositories
             var query = Table.AsQueryable();
             if (!tracking)
                 query = Table.AsNoTracking();
-            return await query.FirstOrDefaultAsync(data => data.Id == Guid.Parse(id));
+            return await query.FirstOrDefaultAsync(data => data.Id == Int16.Parse(id));
         }
         //FINDASYNC
         //public async Task<T> GetByIdAsync(string id, bool tracking = true)

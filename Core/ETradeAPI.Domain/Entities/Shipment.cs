@@ -9,7 +9,7 @@ namespace ETradeAPI.Domain.Entities
 {
     public class Shipment :BaseEntity
     {
-        public Guid OrderId { get; set; }
+        public int OrderId { get; set; }
         public DateTime ShipmentDate { get; set; }
         public DateTime DeliveryDate { get; set; }
         public string ShippingMethod { get; set; }

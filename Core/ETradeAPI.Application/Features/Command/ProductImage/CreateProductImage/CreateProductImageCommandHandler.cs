@@ -1,5 +1,6 @@
 ﻿using ETradeAPI.Application.Features.Command.Product.CreateProduct;
 using ETradeAPI.Application.Repositories;
+using ETradeAPI.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,7 @@ namespace ETradeAPI.Application.Features.Command.ProductImage.CreateProductImage
 
         public async Task<CreateProductImageCommandResponse> Handle(CreateProductImageCommandRequest request, CancellationToken cancellationToken)
         {
-          var entity = await _productReadRepository.Table.Where(x => x.Id == request.ProductId).SingleAsync();
+            var entity = await _productReadRepository.Table.Where(x => x.Id == request.ProductId).SingleAsync();
             if (entity.ImagePath == null)
                 entity.ImagePath = new List<string>();
             foreach (var imagePath in request.ImagePaths)

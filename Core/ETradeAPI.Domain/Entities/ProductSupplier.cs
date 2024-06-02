@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace ETradeAPI.Domain.Entities
 {
-    public class BasketItem : BaseEntity
+    public class ProductSupplier :BaseEntity
     {
-        public int BasketId { get; set; }
         public int ProductId { get; set; }
-
-        public int Quantity { get; set; }
-
-        public Basket Basket { get; set; }
         public Product Product { get; set; }
+        public int SupplierId { get; set; }
+        public Supplier Supplier { get; set; }
+        public int SupplyPrice { get; set; }
+        public int StockQuantity { get; set; }
+
     }
 }

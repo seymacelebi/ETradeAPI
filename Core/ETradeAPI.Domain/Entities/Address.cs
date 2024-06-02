@@ -9,7 +9,7 @@ namespace ETradeAPI.Domain.Entities
 {
     public class Address : BaseEntity
     {
-        public Guid CustomerId { get; set; }
+        public int CustomerId { get; set; }
         public string AddressType { get; set; } // (Billing, Shipping)
         public string StreetAddress { get; set; }
         public string City { get; set; }

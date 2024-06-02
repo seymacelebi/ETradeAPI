@@ -9,7 +9,7 @@ namespace ETradeAPI.Application.Features.Command.ProductImage.CreateProductImage
 {
     public class CreateProductImageCommandRequest : IRequest<CreateProductImageCommandResponse>
     {
-        public Guid ProductId { get; set; }
+        public int ProductId { get; set; }
         public List<string> ImagePaths { get; set; }
 
     }

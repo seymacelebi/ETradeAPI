@@ -74,14 +74,14 @@ namespace ETradeAPI.Persistence.Services
             if (basket != null)
             {
                 //bu eşitliği sağlayan ürün varsa basketa ürün eklenmiş demek bu durumda quantity arttır diyoruz.
-                BasketItem _basketItem = await _basketItemReadRepository.GetSingleAsync(bi => bi.BasketId == basket.Id && bi.ProductId == Guid.Parse(basketItem.ProductId));
+                BasketItem _basketItem = await _basketItemReadRepository.GetSingleAsync(bi => bi.BasketId == basket.Id && bi.ProductId == Int32.Parse(basketItem.ProductId));
                 if (_basketItem != null)
                     _basketItem.Quantity++;
                 else
                     await _basketItemWriteRepository.AddAsync(new()
                     {
                         BasketId = basket.Id,
-                        ProductId = Guid.Parse(basketItem.ProductId),
+                        ProductId = Int32.Parse(basketItem.ProductId),
                         Quantity = basketItem.Quantity
                     });
 

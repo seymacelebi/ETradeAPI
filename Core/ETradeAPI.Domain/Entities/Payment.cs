@@ -9,7 +9,7 @@ namespace ETradeAPI.Domain.Entities
 {
     public class Payment :BaseEntity
     {
-        public Guid OrderId { get; set; }
+        public int OrderId { get; set; }
         public DateTime PaymentDate { get; set; }
         public decimal Amount { get; set; }
         public string PaymentMethod { get; set; }

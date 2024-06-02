@@ -10,7 +10,7 @@ namespace ETradeAPI.Application.Features.Command.ProductImage.UpdateProductImage
 {
     public class UpdateProductImageCommandRequest : IRequest<UpdateProductImageCommandResponse>
     {
-        public Guid ProductId { get; set; }
+        public int ProductId { get; set; }
         public string NewImagePath { get; set; } // Rename it to NewImagePath to indicate it's for updating
     }
 }

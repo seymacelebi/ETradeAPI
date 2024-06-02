@@ -19,7 +19,7 @@ namespace ETradeAPI.Application.Features.Queries.Product.GetByIdProduct
             //                            .Include(p => p.Category)
             //                            .FirstOrDefaultAsync();
             P.Product product = await _productReadRepository.Table.Include(o => o.Category)
-                .FirstOrDefaultAsync(p => p.Id == (Guid.Parse(request.Id)));
+                .FirstOrDefaultAsync(p => p.Id == (Int16.Parse(request.Id)));
 
             //Order? order = await _orderReadRepository.Table
             //    .Include(o => o.Basket)
