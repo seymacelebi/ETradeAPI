@@ -33,6 +33,14 @@ public class ETradeAPIDbContext : IdentityDbContext<AppUser, AppRole, string>
     public DbSet<Shipment> Shipments { get; set; } // New DbSet
     public DbSet<Discount> Discounts { get; set; } // New DbSet
     public DbSet<ProductDiscount> ProductDiscounts { get; set; }
+    public DbSet<ProductReview> ProductReview { get; set; }
+    public DbSet<Supplier> Suppliers { get; set; }
+    public DbSet<Wishlist> Wishlists { get; set; }
+    public DbSet<WishlistItem> WishlistItems { get; set; }
+    public DbSet<Brand> Brands { get; set; }
+    public DbSet<ProductSupplier> ProductSuppliers { get; set; }
+    public DbSet<RecentlyViewedProduct> RecentlyViewedProducts { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -134,6 +142,11 @@ public class ETradeAPIDbContext : IdentityDbContext<AppUser, AppRole, string>
         .HasOne(a => a.Customer)
         .WithOne(c => c.AppUser)
         .HasForeignKey<Customer>(c => c.AppUserId);
+
+        builder.Entity<RecentlyViewedProduct>()
+            .HasOne(b => b.Product)
+            .WithMany(a => a.RecentlyViewedProducts)
+            .HasForeignKey(b => b.ProductId);
 
         base.OnModelCreating(builder);
 

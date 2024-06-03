@@ -14,10 +14,10 @@ namespace ETradeAPI.Persistence.Services
 {
     public class OrderService : IOrderService
     {
-        readonly IOrderWriteRepository _orderWriteRepository;
-        readonly IOrderReadRepository _orderReadRepository;
+        readonly IOrderItemWriteRepository _orderWriteRepository;
+        readonly IOrderItemReadRepository _orderReadRepository;
 
-        public OrderService(IOrderWriteRepository orderWriteRepository, IOrderReadRepository orderReadRepository)
+        public OrderService(IOrderItemWriteRepository orderWriteRepository, IOrderItemReadRepository orderReadRepository)
         {
             _orderWriteRepository = orderWriteRepository;
             _orderReadRepository = orderReadRepository;

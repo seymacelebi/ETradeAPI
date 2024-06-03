@@ -25,5 +25,7 @@ namespace ETradeAPI.Domain.Entities
         public ICollection<ProductDiscount> ProductDiscounts { get; set; } // New relationship
 
         public ICollection<ProductSupplier> ProductSuppliers { get; set; }
+        public ICollection<RecentlyViewedProduct> RecentlyViewedProducts { get; set; }
+
     }
 }

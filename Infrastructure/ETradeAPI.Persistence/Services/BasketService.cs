@@ -18,12 +18,12 @@ namespace ETradeAPI.Persistence.Services
     {
         readonly IHttpContextAccessor _httpContextAccessor;
         readonly UserManager<AppUser> _userManager;
-        readonly IOrderReadRepository _orderReadRepository;
+        readonly IOrderItemReadRepository _orderReadRepository;
         readonly IBasketWriteRepository _basketWriteRepository;
         readonly IBasketReadRepository _basketReadRepository;
         readonly IBasketItemWriteRepository _basketItemWriteRepository;
         readonly IBasketItemReadRepository _basketItemReadRepository;
-        public BasketService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IOrderReadRepository orderReadRepository, IBasketWriteRepository basketWriteRepository, IBasketItemWriteRepository basketItemWriteRepository, IBasketItemReadRepository basketItemReadRepository, IBasketReadRepository basketReadRepository)
+        public BasketService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IOrderItemReadRepository orderReadRepository, IBasketWriteRepository basketWriteRepository, IBasketItemWriteRepository basketItemWriteRepository, IBasketItemReadRepository basketItemReadRepository, IBasketReadRepository basketReadRepository)
         {
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
