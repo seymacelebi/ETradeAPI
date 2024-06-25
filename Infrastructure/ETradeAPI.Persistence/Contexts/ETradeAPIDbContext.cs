@@ -2,6 +2,7 @@
 using ETradeAPI.Domain.Entities.Common;
 using ETradeAPI.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,22 @@ public class ETradeAPIDbContext : IdentityDbContext<AppUser, AppRole, string>
     public DbSet<WishlistItem> WishlistItems { get; set; }
     public DbSet<Brand> Brands { get; set; }
     public DbSet<ProductSupplier> ProductSuppliers { get; set; }
+
+    public DbSet<UserSession> UserSessions { get; set; }
+    public DbSet<ProductTag> ProductTags { get; set; }
+    public DbSet<WarehouseLocation> WarehouseLocations { get; set; }
+    public DbSet<InventoryMovement> InventoryMovements { get; set; }
+    public DbSet<ReturnRequest> ReturnRequests { get; set; }
+    public DbSet<OrderFulfillment> OrderFulfillments { get; set; }
+    public DbSet<CustomerPreference> CustomerPreferences { get; set; }
+    public DbSet<LoyaltyProgram> LoyaltyPrograms { get; set; }
+    public DbSet<Campaign> Campaigns { get; set; }
+    public DbSet<Coupon> Coupons { get; set; }
+    public DbSet<SalesReport> SalesReports { get; set; }
+    public DbSet<CustomerAnalytics> CustomerAnalytics { get; set; }
+    public DbSet<Refund> Refunds { get; set; }
+    public DbSet<Invoice> Invoices { get; set; }
+
     public DbSet<RecentlyViewedProduct> RecentlyViewedProducts { get; set; }
 
 
@@ -147,6 +164,86 @@ public class ETradeAPIDbContext : IdentityDbContext<AppUser, AppRole, string>
             .HasOne(b => b.Product)
             .WithMany(a => a.RecentlyViewedProducts)
             .HasForeignKey(b => b.ProductId);
+
+        // UserSession varlığı için birincil anahtar tanımı
+        builder.Entity<UserSession>()
+            .HasKey(us => us.Id);
+
+        // UserSession ile AppUser arasındaki ilişki tanımı
+        builder.Entity<UserSession>()
+            .HasOne(us => us.User)
+            .WithMany()
+            .HasForeignKey(us => us.UserId);
+
+        // ProductTag - Product ilişkisinin tanımı
+        builder.Entity<ProductTag>()
+            .HasOne(pt => pt.Product)
+            .WithMany(p => p.ProductTags)
+            .HasForeignKey(pt => pt.ProductId);
+
+        // InventoryMovement - Product ve WarehouseLocation ilişkilerinin tanımı
+        builder.Entity<InventoryMovement>()
+            .HasOne(im => im.Product)
+            .WithMany()
+            .HasForeignKey(im => im.ProductId);
+
+        builder.Entity<InventoryMovement>()
+            .HasOne(im => im.WarehouseLocation)
+            .WithMany(wl => wl.InventoryMovements)
+            .HasForeignKey(im => im.WarehouseId);
+
+        // ReturnRequest - Order ve Product ilişkilerinin tanımı
+        builder.Entity<ReturnRequest>()
+            .HasOne(rr => rr.Order)
+            .WithMany()
+            .HasForeignKey(rr => rr.OrderId);
+
+        builder.Entity<ReturnRequest>()
+            .HasOne(rr => rr.Product)
+            .WithMany()
+            .HasForeignKey(rr => rr.ProductId);
+
+
+        // OrderFulfillment - Order ve WarehouseLocation ilişkilerinin tanımı
+        builder.Entity<OrderFulfillment>()
+            .HasOne(of => of.Order)
+            .WithMany(o => o.OrderFulfillments)
+            .HasForeignKey(of => of.OrderId);
+
+        builder.Entity<OrderFulfillment>()
+            .HasOne(of => of.WarehouseLocation)
+            .WithMany()
+            .HasForeignKey(of => of.WarehouseId);
+
+        // CustomerPreference - Customer ilişkisinin tanımı
+        builder.Entity<CustomerPreference>()
+            .HasOne(cp => cp.Customer)
+            .WithMany(c => c.CustomerPreferences)
+            .HasForeignKey(cp => cp.CustomerId);
+
+        // LoyaltyProgram - Customer ilişkisinin tanımı
+        builder.Entity<LoyaltyProgram>()
+            .HasOne(lp => lp.Customer)
+            .WithMany(c => c.LoyaltyPrograms)
+            .HasForeignKey(lp => lp.CustomerId);
+
+        // CustomerAnalytics - Customer ilişkisinin tanımı
+        builder.Entity<CustomerAnalytics>()
+            .HasOne(ca => ca.Customer)
+            .WithMany()
+            .HasForeignKey(ca => ca.CustomerId);
+
+        // Refund - Order ilişkisinin tanımı
+        builder.Entity<Refund>()
+            .HasOne(r => r.Order)
+            .WithMany(o => o.Refunds)
+            .HasForeignKey(r => r.OrderId);
+
+        // Invoice - Order ilişkisinin tanımı
+        builder.Entity<Invoice>()
+            .HasOne(i => i.Order)
+            .WithMany(o => o.Invoices)
+            .HasForeignKey(i => i.OrderId);
 
         base.OnModelCreating(builder);
 

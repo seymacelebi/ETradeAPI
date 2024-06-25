@@ -26,6 +26,10 @@ namespace ETradeAPI.Domain.Entities
         public ICollection<Payment> Payments { get; set; }
         public ICollection<Shipment> Shipments { get; set; } // New relationship
 
+        public virtual ICollection<OrderFulfillment> OrderFulfillments { get; set; }
+        public virtual ICollection<Refund> Refunds { get; set; }
+        public virtual ICollection<Invoice> Invoices { get; set; }
+
 
     }
 

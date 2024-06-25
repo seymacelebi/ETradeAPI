@@ -21,4 +21,7 @@ public class Customer :BaseEntity
 
     public string AppUserId { get; set; }
     public AppUser AppUser { get; set; }
+
+    public virtual ICollection<CustomerPreference> CustomerPreferences { get; set; }
+    public virtual ICollection<LoyaltyProgram> LoyaltyPrograms { get; set; }
 }

@@ -27,5 +27,6 @@ namespace ETradeAPI.Domain.Entities
         public ICollection<ProductSupplier> ProductSuppliers { get; set; }
         public ICollection<RecentlyViewedProduct> RecentlyViewedProducts { get; set; }
 
+        public virtual ICollection<ProductTag> ProductTags { get; set; }
     }
 }
